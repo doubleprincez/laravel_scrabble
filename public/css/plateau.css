@@ -1,0 +1,246 @@
+
+html,
+body {
+	height: 150vh;
+	overflow: hidden;
+    background-color: rgb(255, 254, 254);
+}
+.row {
+    width: 542px;
+    height: 542px;
+    background-color:transparent;
+    min-width: 542px;
+    min-height: 542px;
+    margin: 40px auto;
+}
+/*styling numbers and letters around the board*/
+
+.topright1 {
+	position: absolute;
+	top: 4px;
+	right: 708px;
+	font-size: 18px;
+}
+.topright2 {
+	position: absolute;
+	top: 4px;
+	right: 670px;
+	font-size: 18px;
+}
+.topright3 {
+	position: absolute;
+	top: 4px;
+	right: 630px;
+	font-size: 18px;
+}
+.topright4 {
+	position: absolute;
+	top: 4px;
+	right: 590px;
+	font-size: 18px;
+}
+.topright5 {
+	position: absolute;
+	top: 4px;
+	right: 550px;
+	font-size: 18px;
+}
+.topright6 {
+	position: absolute;
+	top: 4px;
+	right: 510px;
+	font-size: 18px;
+}
+.topright7 {
+	position: absolute;
+	top: 4px;
+	right: 470px;
+	font-size: 18px;
+}
+.topright8 {
+	position: absolute;
+	top: 4px;
+	right: 434px;
+	font-size: 18px;
+}
+.topright9 {
+	position: absolute;
+	top: 4px;
+	right: 394px;
+	font-size: 18px;
+}
+.topright10 {
+	position: absolute;
+	top: 4px;
+	right: 350px;
+	font-size: 18px;
+}
+.topright11 {
+	position: absolute;
+	top: 4px;
+	right: 312px;
+	font-size: 18px;
+}
+.topright12 {
+	position: absolute;
+	top: 4px;
+	right: 272px;
+	font-size: 18px;
+}
+.topright13 {
+	position: absolute;
+	top: 4px;
+	right: 232px;
+	font-size: 18px;
+}
+.topright14 {
+	position: absolute;
+	top: 4px;
+	right: 194px;
+	font-size: 18px;
+}
+.topright15 {
+	position: absolute;
+	top: 4px;
+	right: 156px;
+	font-size: 18px;
+}
+
+.lefta {
+	position: absolute;
+	top: 38px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftb {
+	position: absolute;
+	top: 78px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftc {
+	position: absolute;
+	top: 118px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftd {
+	position: absolute;
+	top: 158px;
+	right: 736px;
+	font-size: 18px;
+}
+.lefte {
+	position: absolute;
+	top: 198px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftf {
+	position: absolute;
+	top: 238px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftg {
+	position: absolute;
+	top: 280px;
+	right: 736px;
+	font-size: 18px;
+}
+.lefth {
+	position: absolute;
+	top: 318px;
+	right: 736px;
+	font-size: 18px;
+}
+.lefti {
+	position: absolute;
+	top: 358px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftj {
+	position: absolute;
+	top: 400px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftk {
+	position: absolute;
+	top: 438px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftl {
+	position: absolute;
+	top: 476px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftm {
+	position: absolute;
+	top: 520px;
+	right: 736px;
+	font-size: 18px;
+}
+.leftn {
+	position: absolute;
+	top: 558px;
+	right: 736px;
+	font-size: 18px;
+}
+.lefto {
+	position: absolute;
+	top: 596px;
+	right: 736px;
+	font-size: 18px;
+}
+
+
+/* Game Board Styling: */
+
+.board{
+	margin-left: 4px;
+	display: grid;
+	grid-template-columns: repeat(15, 1fr);
+	grid-gap: 5px;
+	grid-auto-rows: minmax(35px, auto);
+	width: 480px;
+	height: 470px;
+  }
+  
+  .sq {
+	background-color: #eee;
+	height: 34px;
+	width: 34px;
+	  align-items: center;
+	  text-align: center;
+	font-size:9.2px;
+	margin-top:4px;
+	font-family: DejaVu Sans Mono, monospace;
+	color:white;
+	vertical-align: center;
+
+  }
+  
+  .sq-tw {
+	background-color: rgba(124, 0, 0, 0.904);
+	
+  }
+  .sq-dw {
+	background-color: rgba(226, 149, 149, 0.863);
+  }
+  .sq-tl {
+	background-color: rgba(4, 69, 153, 0.863);
+  }
+  .sq-dl {
+	background-color: rgba(59, 139, 231, 0.548);
+  }
+  
+  .tile{
+	background-color: #ffc;
+  }
+.star{
+	background-color: rgb(70, 70, 70);
+}

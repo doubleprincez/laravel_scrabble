@@ -1,0 +1,71 @@
+
+	div.roll-title{
+		font-size: small;
+		color: #ad0d02;
+	}
+	.flex-container {
+        padding: 0;
+        margin: 0 auto;
+        list-style: none;
+        display: flex;
+        justify-content: space-around;
+        box-sizing: border-box;
+        max-width: 500px;
+    }
+
+    .flex-item {
+
+        border: 1px solid lightgray;
+        border-radius: 0.5vw;
+        margin: 0.5%;
+        color: rgb(87, 35, 0);
+		background-color:#0C0C0C;
+        background-image:  url('../img/wood.jpg');
+		border-top-width: 2px;
+		border-top-color:rgb(238, 192, 149);
+		border-bottom-width: 2px;
+		border-bottom-color:rgb(117, 60, 6);
+		border-right-width: 2px;
+		border-right-color:rgb(126, 69, 12);
+		border-left-width: 1px;
+		border-left-color:rgb(189, 175, 160);
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-weight: 200;
+        font-size: 4vw;
+        text-align: center;
+        width: 40px;
+        height: 40px;
+        line-height:12.8vw;
+		box-shadow: 
+		inset rgba(black, 0.2) -4px -4px 24px,
+		inset #CFB58B 0 -4px 0,
+		rgba(black, 0.15) 0 6px 6px -3px;	
+		
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);    }
+    .number {
+		line-height: normal;
+    	font-size: 2.6vw;
+    	font-weight: 400;
+    	top: 3vw;
+		vertical-align: -25%;
+    }
+
+    @media screen and (min-width: 501px) {
+		.flex-item {
+        	font-size: 28px;
+        	line-height: 65px;
+        	border-radius: 5px;
+			padding-left:3px;
+		}
+    	.number {
+        	font-size:14.5px;
+        	top:-15px;
+    	}
+    }
+	.top-left {
+		position: absolute;
+		top: -10px;
+		
+	  }
+
+
