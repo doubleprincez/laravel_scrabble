@@ -15,13 +15,9 @@ class CreatePartieTable extends Migration
     {
         Schema::create('partie', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idJoueur1')->nullable();
-            $table->unsignedBigInteger('idJoueur2')->nullable();
-            $table->unsignedBigInteger('idJoueur3')->nullable();
-            $table->unsignedBigInteger('idJoueur4')->nullable();
+            $table->unsignedBigInteger('game_id')->nullable();
             $table->boolean('typePartie')->nullable();
             $table->text('grille')->nullable();
-            $table->datetime('dateCreation')->nullable()->default(now());
             $table->datetime('dateDebutPartie')->nullable();
             $table->datetime('dateFin')->nullable();
             $table->text('statutPartie')->nullable()->default('enAttente');

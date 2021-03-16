@@ -1,4 +1,4 @@
-@extends('layout')
+  @extends('layout')
 @section('title',"Salle d'attente")
 @section('salle-d-attente')
 <div class="media-body">

@@ -28,7 +28,7 @@ class HomeController extends Controller
     {
         // check if user already has avatar
         if (auth()->user()->avatar) {
-            return redirect()->route('jeu');
+            return redirect()->route('game.select');
 
         } else {
             // creating random user name

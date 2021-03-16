@@ -33,6 +33,8 @@ class JoueurTableSeeder extends Seeder
                 'highscore' => 2312,
 
             ]);
+
+            User::factory()->count(10)->create();
         }
     }
 }

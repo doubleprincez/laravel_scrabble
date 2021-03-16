@@ -7,10 +7,13 @@ use App\Models\Joueur;
 use App\Models\Lettre;
 use App\Models\Lettres;
 use App\Models\Reserve;
+use App\Traits\GameTraits;
 use Illuminate\Http\Request;
 
 class LettresController extends Controller
 {
+    use GameTraits;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -79,38 +82,6 @@ class LettresController extends Controller
 
          }*/
 
-    }
-
-    private function generate_new_pieces()
-    {
-        $arr = collect(Reserve::get('lettre')
-            ->random(7)->toArray());
-        return $arr->flatten(1);
-    }
-
-    private function check_new_game($user_id)
-    {
-        return Game::where('user_id_1', $user_id)
-            ->orWhere('user_id_2', $user_id)
-            ->orWhere('user_id_3', $user_id)
-            ->orWhere('user_id_4')->get();
-    }
-
-
-    private function update_user_letters($id, $lettres)
-    {
-        return Joueur::find($id)->update(['chevalet' => $lettres]);
-//    return Joueur::selectRaw('chevalet as chevalet')->where('idJoueur',1)
-        // ->update(['chevalet'=>$lettres]);
-    }
-
-    private function check_user_pieces($id)
-    {
-
-        // use User Id to check if user still has game
-        $lettre = Joueur::where('id', $id)->first();
-
-        return !$lettre->chevalet || $lettre->chevalet == [] || empty($lettre->chevalet);
     }
 
     /**

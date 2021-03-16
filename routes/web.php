@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\JoueurController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\JoueurController;
-use GuzzleHttp\Psr7\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,20 +21,23 @@ Route::get('/', function () {
 
     if (auth()->check()) {
         // user is logged in prepare user for game
-        return redirect()->route('game.ready');
+        return redirect()->route('game.start');
     } else {
         return view('auth.login');
     }
 });
 
+// now we are ready to start game after uploading username and photo
+Route::post('/game_start', [JoueurController::class, 'store'])->name('game.start');
+
 // we are ready to play, we just need to confirm username and photo
 Route::get('/game_ready', [App\Http\Controllers\HomeController::class, 'ready'])->name('game.ready');
 // select the game type
 
-Route::get('/game_select',[\App\Http\Controllers\PartieController::class,'index'])->name('game.select');
+Route::get('/game_select', [\App\Http\Controllers\PartieController::class, 'index'])->name('game.select');
 
-// now we are ready to start game after uploading username and photo
-Route::post('/game_start', 'App\Http\Controllers\JoueurController@store')->name('game.start');
+Route::post('/game_select', [\App\Http\Controllers\PartieController::class, 'store'])->name('game.select');
+
 
 // show game board
 Route::get('/jeu', 'App\Http\Controllers\LettresController@ChoisirLettresAléatoiresDuReserve')->name('jeu');
