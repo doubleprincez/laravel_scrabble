@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
     @if(config('app.env')=='local')
+        <link rel="stylesheet" href="{{ asset('cs/all.min.css') }}" />
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
 use App\Models\Joueur;
 use App\Models\Lettre;
 use App\Models\Lettres;
@@ -22,28 +21,34 @@ class LettresController extends Controller
     public function ChoisirLettresAléatoiresDuReserve()
     {
 
-        $id = auth()->id();
-        // We are about to start the game now
-        // first thing we do is check if current user has any previous games
-        // we need to check incase he reloads the browser
-        $check_new_game = $this->check_new_game($id);
-        dd('here');
-
-        // if user has game running then load game state if game has ended, then restart
-
-
-        // check if the player has no more playing piece left
-        $checker = $this->check_user_pieces($id);
-
-        // generate new random pieces for the player and update it in joeur table
-        if ($checker == true) {
-            $lettres = $this->generate_new_pieces();
-
-            // passing generated letters into user details
-            $update = $this->update_user_letters($id, $lettres);
-        } else {
-
+        $user_id = auth()->id();
+        // check if there is game in the request
+        if (!request()->has('game')) {
+            return redirect()->route('game.select');
         }
+        // getting game ID and fetching game
+        $game = $this->get_game_by_id((int)request()->get('game'));
+
+        // check if the game has finished or is still running
+        if ($this->check_game_finished($game)) {
+            // get if the player has no more playing piece left
+            $user_chavolet = json_decode($this->get_user_pieces($game, $user_id));
+
+            $check_chavolet = $this->check_empty_array($user_chavolet);
+            if ($check_chavolet != null && $check_chavolet != []) {
+                // user still has chavolet left
+
+            } else {
+                // user has used up his chavolet, so we need to update with new
+                $user_position = $this->search_user_chavolet($game, $user_id);
+
+                $lettres = $this->generate_new_pieces($game->id, $user_position);
+            }
+
+        } else {
+           return redirect()->route('game.ended')->with(['Resultat'=>'Game Ended']);
+        }
+
 
         $chevalet = json_decode(Joueur::where('id', $id)->first()->chevalet);
 

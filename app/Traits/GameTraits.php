@@ -27,17 +27,30 @@ trait GameTraits
             // check if any of those game is still active
 
             foreach ($games = $previous_game->get() as $game) {
-                $checker = (int)$this->sum_stock_quantite($game) != 0;
-                if ($checker == true) {
-                    // break out of the loop returning that game
+                // looping through all games and checking their stock if it still remains to determine game that is finished
+                if ($this->check_game_stock($game)) {
                     return $game;
                 }
             }
-
             return false;
         } else {
             return false;
         }
+    }
+
+    private function check_game_stock($game)
+    {
+        $checker = (int)$this->sum_stock_quantite($game) != 0;
+        if ($checker == true) {
+            // break out of the loop returning that game
+            return $game;
+        }
+        return false;
+    }
+
+    public function check_game_finished($game)
+    {
+        return $this->check_game_stock($game);
     }
 
     public function create_game(int $user_id, int $type)
@@ -107,16 +120,45 @@ trait GameTraits
 
     }
 
+
     private function sum_stock_quantite(Game $model)
     {
         return $model->stock->sum('quantite');
     }
 
-    private function generate_new_pieces()
+    private function generate_new_pieces(int $game_id, int $position)
     {
-        $arr = collect(Reserve::get('lettre')
-            ->random(7)->toArray());
-        return $arr->flatten(1);
+        // To generate piece, we need the game stock, so we are sure the values are available
+        // first get all values that are not 0
+        $game_stock = Stock::where('game_id', $game_id)->where('quantite', '!=', 0)->get();
+
+        // now get the count of those number and use it to select value on random
+        $count = count($game_stock);
+        // if values in the stock is less than 7, then use the stock current count else
+        // use 7 because we are generating 7 items in user chavolet
+        $condition = $count < 7 ? $count : 7;
+        // empty stack for holding new items we are about to pick from stock
+        $stack = array();
+        for ($i = 0; $i < $condition; $i++) {
+            // generate random values using the condition stated above
+            $rand = random_int(1, $condition);
+            //
+            $removed_letter = $game_stock[$rand];
+            if ($removed_letter->quantite > 0) {
+                $stack[] = $removed_letter->lettre;
+                $qty = (int)$removed_letter->quantite;
+                $removed_letter->quantite = $qty--;
+                $removed_letter->save();
+            }
+
+        }
+        // pass values in the stack into user_chavolet
+        $user_chavolet = 'user_' . $position . '_chavolet';
+        $game = $this->get_game_by_id($game_id);
+        $game->$user_chavolet = json_encode($stack);
+        $game->save();
+        dd($game);
+        return $game;
     }
 
     private function update_user_letters($id, $lettres)
@@ -126,22 +168,63 @@ trait GameTraits
         // ->update(['chevalet'=>$lettres]);
     }
 
-    private function check_user_pieces($id)
+
+    private function check_empty_array(array $array)
     {
-
-        // use User Id to check if user still has game
-        $lettre = Joueur::where('id', $id)->first();
-
-        return !$lettre->chevalet || $lettre->chevalet == [] || empty($lettre->chevalet);
+        // create an empty array called stack
+        $stack = array();
+        // foreach of the array we passed in
+        foreach ($array as $key) {
+            // if the value is not an empty string or is not null,
+            // pass that value into our stack
+            if ($key != "" && $key != null) $stack[] = $key;
+        }
+        // return the stack
+        return $stack;
     }
 
-    private function generate_nick()
+    private function get_user_pieces(Game $game, $user_id)
+    {
+        $user_position = $this->search_user_chavolet($game, $user_id);
+
+        if ($user_position == 1) {
+            return $game->user_1_chavolet;
+        } elseif ($user_position == 2) {
+            return $game->user_2_chavolet;
+        } elseif ($user_position == 3) {
+            return $game->user_3_chavolet;
+        } elseif ($user_position = 4) {
+            return $game->user_4_chavolet;
+        } else
+            return null;
+    }
+
+
+    private
+    function search_user_chavolet($game, int $user_id)
+    {
+        if ((int)$game->user_id_1 == $user_id) {
+            return 1;
+        } elseif ((int)$game->user_id_2 == $user_id) {
+            return 2;
+        } elseif ((int)$game->user_id_3 == $user_id) {
+            return 3;
+        } elseif ((int)$game->user_id_4 == $user_id) {
+            return 4;
+        } else {
+            return null;
+        }
+    }
+
+    private
+    function generate_nick()
     {
         // creating random user name
         return 'user' . time();
     }
 
-    private function upload_image($image_nom)
+    private
+    function upload_image($image_nom)
     {
         request()->validate([$image_nom => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
         if (request()->$image_nom) {
