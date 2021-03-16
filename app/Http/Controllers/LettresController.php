@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lettres;
+use App\Models\Game;
 use App\Models\Joueur;
 use App\Models\Lettre;
-use App\Models\Partie;
+use App\Models\Lettres;
 use App\Models\Reserve;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\Null_;
 
 class LettresController extends Controller
 {
@@ -18,33 +16,20 @@ class LettresController extends Controller
         $this->middleware('auth');
     }
 
-    /*     public function getvaleur(){
-            $letter = DB::table('lettres')->get('lettre');
-             if (($letter ='a') || ($letter = 'e') || ($letter = "i") || ($letter = "o") || ($letter = "u") || ($letter ="l") || ($letter = "n") || ($letter = "r") || ($letter = "s") || ($letter = "t")) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            }  elseif (($letter = 'd') || ($letter = 'g')) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            } elseif (($letter = 'b') || ($letter = 'c') || ($letter = 'm') || ($letter = 'p')) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            } elseif (($letter = 'f') || ($letter = 'h') || ($letter = 'v') || ($letter = 'w') || ($letter = 'y')) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            } elseif ($letter = 'k') {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            } elseif (($letter == 'j') || ($letter = 'x')) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            } elseif (($letter = 'q') || ($letter = 'z')) {
-                $valeur= DB::table('lettres')->where('lettre','=',$letter)->get('valeur');
-            }
-
-          return ['valeur'=>$valeur];
-        }
-    */
-
     public function ChoisirLettresAléatoiresDuReserve()
     {
-        dd('in lettres here');
-        // First check if the player has no more playing piece left
+
         $id = auth()->id();
+        // We are about to start the game now
+        // first thing we do is check if current user has any previous games
+        // we need to check incase he reloads the browser
+        $check_new_game = $this->check_new_game($id);
+        dd('here');
+
+        // if user has game running then load game state if game has ended, then restart
+
+
+        // check if the player has no more playing piece left
         $checker = $this->check_user_pieces($id);
 
         // generate new random pieces for the player and update it in joeur table
@@ -101,6 +86,14 @@ class LettresController extends Controller
         $arr = collect(Reserve::get('lettre')
             ->random(7)->toArray());
         return $arr->flatten(1);
+    }
+
+    private function check_new_game($user_id)
+    {
+        return Game::where('user_id_1', $user_id)
+            ->orWhere('user_id_2', $user_id)
+            ->orWhere('user_id_3', $user_id)
+            ->orWhere('user_id_4')->get();
     }
 
 
