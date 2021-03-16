@@ -9,6 +9,8 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function stock()
     {
         return $this->hasOne(Stock::class);
@@ -17,5 +19,25 @@ class Game extends Model
     public function partie()
     {
         return $this->hasOne(Partie::class);
+    }
+
+    public function player_1()
+    {
+        return $this->belongsTo(User::class, 'user_id_1');
+    }
+
+    public function player_2()
+    {
+        return $this->belongsTo(User::class, 'user_id_2');
+    }
+
+    public function player_3()
+    {
+        return $this->belongsTo(User::class, 'user_id_3');
+    }
+
+    public function player_4()
+    {
+        return $this->belongsTo(User::class, 'user_id_4');
     }
 }

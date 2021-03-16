@@ -12,27 +12,46 @@ use App\Models\Stock;
 trait GameTraits
 {
 
+    private function get_game_by_id($game_id)
+    {
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4'])->where('id', $game_id)->firstOrFail();
+    }
+
     private function check_previous_game($user_id)
     {
         // check if user has any running game
-        $previous_game = $this->check_new_game($user_id);
+        $previous_game = $this->check_all_user_game($user_id);
 
         if ($previous_game->count() > 0) {
             // user has previous game
-            return $previous_game;
+            // check if any of those game is still active
+
+            foreach ($games = $previous_game->get() as $game) {
+                $checker = (int)$this->sum_stock_quantite($game) != 0;
+                if ($checker == true) {
+                    // break out of the loop returning that game
+                    return $game;
+                }
+            }
+
+            return false;
         } else {
             return false;
         }
     }
 
-    public function create_game(int $user_id)
+    public function create_game(int $user_id, int $type)
     {
         $game = Game::create([
             'user_id_1' => $user_id,
             'game_status' => true
         ]);
         $this->create_new_game_user_chavolet($game->id, $game);
-        return $game;
+        // create partie for game
+        $this->create_partie($game->id, $type);
+        // create stock for game
+        $this->create_game_stock($game->id);
+        return $game->load('player_1');
     }
 
     private function create_new_game_user_chavolet(int $game_id, Game $game = null)
@@ -77,15 +96,20 @@ trait GameTraits
 
     }
 
-    private function check_new_game($user_id)
+    private function check_all_user_game($user_id)
     {
         // and game is not empty
-        return Game::where('user_id_1', $user_id)
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4'])->where('user_id_1', $user_id)
             ->orWhere('user_id_2', $user_id)
             ->orWhere('user_id_3', $user_id)
-            ->orWhere('user_id_4')->whereHas('stock', function ($query) {
-                return $query->where('lettre', 'empty')->where('quantite', 0);
-            })->get();
+            ->orWhere('user_id_4', $user_id);
+
+
+    }
+
+    private function sum_stock_quantite(Game $model)
+    {
+        return $model->stock->sum('quantite');
     }
 
     private function generate_new_pieces()

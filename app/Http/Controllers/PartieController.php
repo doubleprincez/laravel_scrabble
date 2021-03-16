@@ -24,18 +24,27 @@ class PartieController extends Controller
      */
     public function index()
     {
-        $partie = Partie::all()->toArray();
-        return view('type-partie', compact('partie'));
+//        $partie = Partie::all()->toArray();, compact('partie')
+        return view('type-partie');
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function wait()
     {
-        return view('type-partie');
+
+        if (request()->has('game')) {
+            $game = request()->get('game');
+            if (gettype($game) != "object") {
+                $game = $this->get_game_by_id((int)$game);
+            }
+        } else {
+            return redirect()->route('game.wait');
+        }
+        return view('salle-d-attente', compact('game'));
+
     }
 
     /**
@@ -49,30 +58,28 @@ class PartieController extends Controller
         // need to check if user is already in a game so the user does not join
         // another game till the game ends.
         $check_previous_game = $this->check_previous_game($user_id);
-        dd($check_previous_game);
+
         if ($check_previous_game != false) {
             // get load previous game
-            $game = $check_previous_game->first();
+            $game = $check_previous_game;
             // go to previous game
-            return redirect()->route('jue')->with(compact('game'));
+
+            return redirect()->route('game.wait', compact('game'));
         }
+
         $request->validate([
             'typePartie' => 'required',
         ]);
+
         $type = (int)trim($request->get('typePartie'));
 
         // here we create the game
-        $game = $this->create_game($user_id);
-        $this->create_partie($game->id, $type);
-        // first we create the game with the current user as the first user
-        // we create the stock for holding the new game reserve values
-        // we create the partie for each game to ensure those that want to join
-        // can only join if there is empty space left to join.
+        $game = $this->create_game($user_id, $type);
 
         // move user to the waiting room if the number of players is not complete yet
 
 
-//        return redirect('/type-partie')->with('success', 'Partie saved!');
+        return redirect()->route('game.wait', compact('game'))->with(['success' => 'Partie saved!']);
 
     }
 
