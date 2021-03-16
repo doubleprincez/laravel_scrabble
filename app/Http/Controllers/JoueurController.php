@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Joueur;
 use App\Models\User;
+use App\Traits\GameTraits;
 use Illuminate\Http\Request;
 
 class JoueurController extends Controller
 {
+    use GameTraits;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -50,7 +53,8 @@ class JoueurController extends Controller
         $joueur = User::find(auth()->id());
 
         $joueur->nick = $nick; // this will be the user nick name
-        $joueur->photo = $request->photo->store('photo');
+//        $joueur->photo = $request->photo->store('photo');
+        $joueur->photo = $this->upload_image('photo');
         $result = $joueur->save();
 
         if ($result) {

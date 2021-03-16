@@ -1,7 +1,7 @@
 @extends('layout')
 @section('title',"Salle d'attente")
 @section('salle-d-attente')
-    <div class="media-body">
+    <div class="container-fluid mb-5">
         <div class="row align-content-center">
             <div class="col align-self-center text-center">
                 <div class="spinner-border text-danger"></div>
@@ -29,44 +29,78 @@
                 </div>
                 <div class="form-group">
 
-                    <div class="col-md-8 col-md-offset-2 bootstrap snippets bootdeys">
-                        <div class="widget-container scrollable list rollodex">
-                            <div class="heading">
-                                <i class="fa fa-comment"></i>PartieID<i class="fa fa-plus pull-right"></i><i
+                    <div class="col-md-8 offset-md-2 bootstrap snippets bootdeys">
+                        <div class="widget-container scrollable list rollodex my-5">
+                            <h3 class="heading text-left">
+                                <i class="fa fa-comment"></i>Players<i class="fa fa-plus pull-right"></i><i
                                         class="fa fa-search pull-right"></i><i class="fa fa-refresh pull-right"></i>
-                            </div>
-                            <div class="widget-content">
-                                <div class="roll-title">
-                                </div>
+                            </h3>
+                            <div class="widget-content text-left">
                                 <ul>
                                     @if($game->player_1)
-                                        <li>
-                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_1->photo) }}"><a
-                                                    href="#"><br>{{ $game->player_1->nick }}</a>
+                                        <li class="flex-item my-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img
+                                                            src="{{ asset($game->player_1->photo) }}"
+                                                            class="img-thumbnail">
+                                                </div>
+                                                <div class="col-10 ">
+                                                    <h4 class="text-info">{{ $game->player_1->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
+                                                </div>
+                                            </div>
+
                                         </li>
                                     @endif
                                     @if($game->player_2)
-                                        <li>
-                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_2->photo) }}"><a
-                                                    href="#"><br>{{ $game->player_2->nick }}</a>
+                                        <li class="flex-item my-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img
+                                                            src="{{ asset($game->player_2->photo) }}"
+                                                            class="img-thumbnail">
+                                                </div>
+                                                <div class="col-10 ">
+                                                    <h4 class="text-info">{{ $game->player_2->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
+                                                </div>
+                                            </div>
+
                                         </li>
                                     @endif
                                     @if($game->player_3)
-                                        <li>
-                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_3->photo) }}"><a
-                                                    href="#"><br>{{ $game->player_3->nick }}</a>
+                                        <li class="flex-item my-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img
+                                                            src="{{ asset($game->player_3->photo) }}"
+                                                            class="img-thumbnail">
+                                                </div>
+                                                <div class="col-10 ">
+                                                    <h4 class="text-info">{{ $game->player_3->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
+                                                </div>
+                                            </div>
+
                                         </li>
                                     @endif
                                     @if($game->player_4)
-                                        <li>
-                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_4->photo) }}"><a
-                                                    href="#"><br>{{ $game->player_4->nick }}</a>
+                                        <li class="flex-item my-3">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img
+                                                            src="{{ asset($game->player_4->photo) }}"
+                                                            class="img-thumbnail">
+                                                </div>
+                                                <div class="col-10 ">
+                                                    <h4 class="text-info">{{ $game->player_4->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
+                                                </div>
+                                            </div>
+
                                         </li>
                                     @endif
                                     @if($players_count==$game->partie->typePartie)
-                                        <li>
+                                        <li class="flex-item my-3 " style="position:absolute;bottom:0">
                                             <button class="btn btn-success"
-                                                    onclick=" window.location.href='{{ route('jeu',$game) }}'">Proceed
+                                                    onclick=" window.location.href='{{ route('jeu',['game'=>$game]) }}'">Proceed
                                                 To Game
                                             </button>
                                         </li>
@@ -74,17 +108,23 @@
                                 </ul>
                                 <br>
                             </div>
-                            <br>
-                            <div class="form-group">
-                                <button class="btn btn-danger" type="button" onclick="quitGame({{ $game->id }})">
-                                    Quitter
-                                </button>
-                            </div>
-                            <script>
-                                function quitGame(id) {
-                                    if (confirm('Quitter Game?')) {
-                                        window.location.href = '{{ route('game.quitter') }}?game=' + id;
-                                    }
-                                }
-                            </script>
+                            <button class="btn btn-danger" type="button" onclick="quitGame({{ $game->id }})">
+                                Quitter
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function quitGame(id) {
+            if (confirm('Quitter Game?')) {
+                window.location.href = '{{ route('game.quitter') }}?game=' + id;
+            }
+        }
+    </script>
+
 @endsection

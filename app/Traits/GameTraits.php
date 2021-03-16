@@ -135,8 +135,22 @@ trait GameTraits
         return !$lettre->chevalet || $lettre->chevalet == [] || empty($lettre->chevalet);
     }
 
-    private function generate_nick(){
+    private function generate_nick()
+    {
         // creating random user name
-        $nick = 'user' . time();
+        return 'user' . time();
+    }
+
+    private function upload_image($image_nom)
+    {
+        request()->validate([$image_nom => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+        if (request()->$image_nom) {
+            $set_nom = time() . '.' . request()->$image_nom->extension();
+            $path = public_path('img/players');
+            request()->$image_nom->move($path, $set_nom);
+            return 'img/players/' . $set_nom;
+        } else {
+            return null;
+        }
     }
 }
