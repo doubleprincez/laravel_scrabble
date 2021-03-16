@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="nick" class="col-3 col-form-label text-md-right">{{ __('Nom') }}</label>
+                        <label for="nick" class="col-3 col-form-label text-md-right">{{ __('UserName') }}</label>
 
                         <div class="col-6">
                             <input id="nom" type="text" class="form-control @error('nick') is-invalid @enderror"
