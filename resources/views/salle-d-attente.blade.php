@@ -2,7 +2,7 @@
 @section('title',"Salle d'attente")
 @section('salle-d-attente')
     <div class="media-body">
-        <div class="row">
+        <div class="row align-content-center">
             <div class="col align-self-center text-center">
                 <div class="spinner-border text-danger"></div>
                 <br>
@@ -41,34 +41,50 @@
                                 <ul>
                                     @if($game->player_1)
                                         <li>
-                                            <img width="30" height="30" src="{{ asset($game->player_1->avatar) }}"><a
+                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_1->photo) }}"><a
                                                     href="#"><br>{{ $game->player_1->nick }}</a>
                                         </li>
                                     @endif
                                     @if($game->player_2)
                                         <li>
-                                            <img width="30" height="30" src="{{ asset($game->player_2->avatar) }}"><a
+                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_2->photo) }}"><a
                                                     href="#"><br>{{ $game->player_2->nick }}</a>
                                         </li>
                                     @endif
                                     @if($game->player_3)
                                         <li>
-                                            <img width="30" height="30" src="{{ asset($game->player_->avatar) }}"><a
+                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_3->photo) }}"><a
                                                     href="#"><br>{{ $game->player_3->nick }}</a>
                                         </li>
                                     @endif
                                     @if($game->player_4)
                                         <li>
-                                            <img width="30" height="30" src="{{ asset($game->player_4->avatar) }}"><a
+                                            <img width="30" height="30" src="{{ asset('storage/'.$game->player_4->photo) }}"><a
                                                     href="#"><br>{{ $game->player_4->nick }}</a>
                                         </li>
                                     @endif
-
+                                    @if($players_count==$game->partie->typePartie)
+                                        <li>
+                                            <button class="btn btn-success"
+                                                    onclick=" window.location.href='{{ route('jeu',$game) }}'">Proceed
+                                                To Game
+                                            </button>
+                                        </li>
+                                    @endif
                                 </ul>
                                 <br>
                             </div>
                             <br>
                             <div class="form-group">
-                                <button class="btn btn-danger" type="button">Quitter</button>
+                                <button class="btn btn-danger" type="button" onclick="quitGame({{ $game->id }})">
+                                    Quitter
+                                </button>
                             </div>
+                            <script>
+                                function quitGame(id) {
+                                    if (confirm('Quitter Game?')) {
+                                        window.location.href = '{{ route('game.quitter') }}?game=' + id;
+                                    }
+                                }
+                            </script>
 @endsection

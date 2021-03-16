@@ -60,7 +60,7 @@ class JoueurController extends Controller
             $msg = ["Resultat" => "Data has not been saved "];
 
         }
-        return redirect()->route('game.ready')->with($msg);
+        return redirect()->route('game.select')->with($msg);
 
     }
 

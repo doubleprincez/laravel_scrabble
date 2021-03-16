@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Partie;
 use App\Traits\GameTraits;
 use Illuminate\Http\Request;
 
@@ -83,54 +82,10 @@ class PartieController extends Controller
 
     }
 
-    private function validator()
+    private function quitter()
     {
+        dd(request()->all());
 
     }
 
-
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Partie $partie
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Partie $partie)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Partie $partie
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Partie $partie)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Partie $partie
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Partie $partie)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Partie $partie
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Partie $partie)
-    {
-        //
-    }
 }

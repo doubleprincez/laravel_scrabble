@@ -38,7 +38,7 @@ body{margin-top:20px;
     padding: 20px 0 20px 0; 
 }
 ul { list-style: none outside none; margin:0; padding: 0; }
-li { width: 320px; float: left; margin: 0 10px; }
+/*li { width: 320px; float: left; margin: 0 10px; }*/
 .widget-container {
     min-height: 348px;
     background: white;
@@ -100,11 +100,11 @@ li { width: 320px; float: left; margin: 0 10px; }
 }
 
 
-.list ul li {
-    padding: 10px 15px 12px 2px;
-    border-bottom: 1px solid #e2e2e2;
-    margin: 0;
-}
+/*.list ul li {*/
+/*    padding: 10px 15px 12px 2px;*/
+/*    border-bottom: 1px solid #e2e2e2;*/
+/*    margin: 0;*/
+/*}*/
 
 .list ul {
     list-style: none;

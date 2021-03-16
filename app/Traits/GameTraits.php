@@ -135,5 +135,8 @@ trait GameTraits
         return !$lettre->chevalet || $lettre->chevalet == [] || empty($lettre->chevalet);
     }
 
-
+    private function generate_nick(){
+        // creating random user name
+        $nick = 'user' . time();
+    }
 }

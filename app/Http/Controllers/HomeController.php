@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\GameTraits;
+
 class HomeController extends Controller
 {
+    use GameTraits;
+
     /**
      * Create a new controller instance.
      *
@@ -17,11 +21,16 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
-        return view('acceuil');
+        if (auth()->user()->avatar) {
+            return redirect()->route('game.select');
+
+        }else{
+            $nick = $this->generate_nick();
+            return view('acceuil')->with(compact('nick'));
+        }
     }
 
     public function ready()
@@ -31,12 +40,13 @@ class HomeController extends Controller
             return redirect()->route('game.select');
 
         } else {
-            // creating random user name
-            $nick = 'user' . time();
+         $nick = $this->generate_nick();
             // take user to avatar settings page
             return view('acceuil')->with(compact('nick'));
         }
     }
+
+
 
 
 }
