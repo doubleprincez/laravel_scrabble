@@ -40,9 +40,10 @@ class JoueurController extends Controller
      */
     public function store(Request $request)
     {
+
         // validate nick name
         request()->validate([
-            'nick' => 'required|max:6|regex:/^[a-zA-Z0-9\s]+$/|unique:user'
+            'nick' => 'required|string|max:15|regex:/^[a-zA-Z0-9\s]+$/|unique:users'
         ]);
         $nick = request()->get('nick');
         //print_r($request->input());

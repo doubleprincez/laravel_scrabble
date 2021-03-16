@@ -18,7 +18,7 @@
                             <div class="imagePreview" style="width:100%; align-content: center"></div>
                             <label for="photo" class="btn btn-danger"
                                    style="padding-left:5px;width: 100%;bottom:0;height: 30px; ">
-                                Choisir avatar<input type="file" id="photo" nick="photo" class="uploadFile img"
+                                Choisir avatar<input type="file" id="photo" name="photo" class="uploadFile img"
                                                      value="Upload Photo" style="display: none;">
                             </label>
 
@@ -29,7 +29,7 @@
 
                         <div class="col-6">
                             <input id="nom" type="text" class="form-control @error('nick') is-invalid @enderror"
-                                   nick="nom" value="{{ isset($nick)?$nick:old('nick') }}" required autocomplete="nick" autofocus>
+                                   name="nick" value="{{ isset($nick)?$nick:old('nick') }}" required autocomplete="nick" autofocus>
 
                             @error('nick')
                             <span class="invalid-feedback" role="alert">
