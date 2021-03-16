@@ -20,10 +20,10 @@ class GameTableSeeder extends Seeder
     {
         if (Game::count() < 1) {
             Game::factory()->count(5)->create()->each(function ($game) {
-                // create partie
-                $user = User::inRandomOrder()->first();
-                $this->create_partie($game->id, random_int(1, 4), $user->id);
-                // create stock
+
+                // create partie for game
+                $this->create_partie($game->id, random_int(1, 4));
+                // create stock for game
                 $this->create_game_stock($game->id);
             });
         }

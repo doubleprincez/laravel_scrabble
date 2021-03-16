@@ -7,6 +7,7 @@ namespace App\Traits;
 use App\Models\Game;
 use App\Models\Partie;
 use App\Models\Reserve;
+use App\Models\Stock;
 
 trait GameTraits
 {
@@ -24,18 +25,41 @@ trait GameTraits
         }
     }
 
-    public function create_game($user_id)
+    public function create_game(int $user_id)
     {
-        return Game::create([
-
+        $game = Game::create([
+            'user_id_1' => $user_id,
+            'game_status' => true
         ]);
+        $this->create_new_game_user_chavolet($game->id, $game);
+        return $game;
     }
 
-    private function create_partie(int $game_id, int $type, int $user_id = null)
+    private function create_new_game_user_chavolet(int $game_id, Game $game = null)
+    {
+        if ($game != null) {
+            // get game
+            $game = Game::where('id', $game_id)->first();
+        }
+
+        // store it into first user chavolet
+        $this->store_chavolet($game, 'user_1_chavolet');
+    }
+
+    private function store_chavolet(Game $game, $chavolet_user_column)
+    {
+        // get all game pieces
+        $pieces = $this->generate_new_pieces();
+        $game->$chavolet_user_column = $pieces;
+        $game->save();
+
+    }
+
+    private function create_partie(int $game_id, int $type)
     {
         return Partie::create([
             'game_id' => $game_id,
-            'user_id_1' => $user_id != null ? $user_id : auth()->id(),
+            'dateDebutPartie' => now(),
             'typePartie' => $type
         ]);
     }
@@ -44,7 +68,7 @@ trait GameTraits
     {
         $reserve = Reserve::all();
         foreach ($reserve as $item) {
-            Partie::create([
+            Stock::create([
                 'game_id' => $game_id,
                 'lettre' => $item->lettre,
                 'quantite' => $item->quantite

@@ -13,4 +13,9 @@ class Game extends Model
     {
         return $this->hasOne(Stock::class);
     }
+
+    public function partie()
+    {
+        return $this->hasOne(Partie::class);
+    }
 }

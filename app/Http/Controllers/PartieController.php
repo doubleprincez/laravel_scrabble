@@ -63,7 +63,7 @@ class PartieController extends Controller
 
         // here we create the game
         $game = $this->create_game($user_id);
-        $this->create_partie($game->id, $type, $user_id);
+        $this->create_partie($game->id, $type);
         // first we create the game with the current user as the first user
         // we create the stock for holding the new game reserve values
         // we create the partie for each game to ensure those that want to join
