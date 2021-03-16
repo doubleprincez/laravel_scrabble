@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**
@@ -34,9 +32,11 @@ class HomeController extends Controller
 
         } else {
             // creating random user name
-            $nick = 'user'.time();
+            $nick = 'user' . time();
             // take user to avatar settings page
             return view('acceuil')->with(compact('nick'));
         }
     }
+
+
 }
