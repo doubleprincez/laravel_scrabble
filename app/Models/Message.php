@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $table = 'message';
+    use HasFactory;
+
+
+    protected function post_by()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

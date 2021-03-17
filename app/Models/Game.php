@@ -40,4 +40,9 @@ class Game extends Model
     {
         return $this->belongsTo(User::class, 'user_id_4');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
