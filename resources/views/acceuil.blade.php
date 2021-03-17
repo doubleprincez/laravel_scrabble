@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title','Inscrivez-vous!')
-@section('acceuil')
+@section('content')
     <div class="container-fluid mb-5">
         <div class="row">
             <div class="col-md-7">

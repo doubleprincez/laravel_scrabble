@@ -1,5 +1,3 @@
-@extends('jeu')
-@section('jeu.plateau')
 
 <div class="board">
     <div class="sq sq-tw" id="sq-1-1">MOT<br>X3</div>
@@ -228,4 +226,3 @@
     <div class="sq" id="sq-15-14"></div>
     <div class="sq sq-tw" id="sq-15-15">MOT<br>X3</div>
   </div>
-@endsection

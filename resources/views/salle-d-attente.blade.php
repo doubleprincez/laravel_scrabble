@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title',"Salle d'attente")
-@section('salle-d-attente')
+@section('content')
     <div class="container-fluid mb-5">
         <div class="row align-content-center">
             <div class="col align-self-center text-center">

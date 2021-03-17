@@ -5,6 +5,7 @@ namespace App\Traits;
 
 
 use App\Models\Game;
+use App\Models\Lettre;
 use App\Models\Partie;
 use App\Models\Reserve;
 use App\Models\Stock;
@@ -161,13 +162,21 @@ trait GameTraits
         return $game;
     }
 
-    private function update_user_letters($id, $lettres)
+    private function generate_valeur(array $user_chevalet)
     {
-        return Joueur::find($id)->update(['chevalet' => $lettres]);
-//    return Joueur::selectRaw('chevalet as chevalet')->where('idJoueur',1)
-        // ->update(['chevalet'=>$lettres]);
-    }
 
+        $valeur = [];
+        foreach ($user_chevalet as $i) {
+
+            if ($i != "" && $i != null) {
+                $valeur[] = Lettre::where('lettre', '=', $i)->first(['lettre', 'valeur']);
+
+            } else {
+                $valeur[] = null;
+            }
+        }
+        return $valeur;
+    }
 
     private function check_empty_array(array $array)
     {

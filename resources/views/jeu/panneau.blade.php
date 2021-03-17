@@ -1,5 +1,4 @@
-@extends('jeu')
-@section('jeu.panneau')
+
 <div class="col-md-8 col-md-offset-2 bootstrap snippets bootdeys">
     <div class="widget-container scrollable list rollodex">
       <div class="heading"id="panneau">
@@ -31,4 +30,3 @@
       </div>
     </div>
   </div>
-@endsection

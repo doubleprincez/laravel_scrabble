@@ -1,5 +1,4 @@
-@extends('jeu')
-@section('jeu.boite-communication')
+
 <div class="container" id="positionbt"> 
     <div class="row">
         <div class="col-md-8 col-md-offset-2 bootstrap snippets bootdeys" >
@@ -97,5 +96,3 @@
         </div>
     </div>
 </div>
-
-@endsection

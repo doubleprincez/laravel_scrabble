@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title','Type de Partie')
-@section('type-partie')
+@section('content')
     <div class="container justify-content-center">
 
         <h2 id="type">Veuillez choisir le type de partie que vous voulez jouer</h2><br><br>

@@ -24,7 +24,7 @@
     @endif
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
     <script src="{{ asset('js/photoupload.js') }}" defer></script>
-
+    @yield('styles')
 </head>
 <body>
 
@@ -34,12 +34,9 @@
 {{--            <div class="media-left media-middle">--}}
 {{--                <img src="{{ asset('img/logo.jpg') }}" class="logo" width="550" height="550">--}}
 {{--            </div>--}}
-@yield('salle-d-attente')
+
 @yield('content')
-@yield('acceuil')
 
-
-@yield('type-partie')
 
 {{--        </div>--}}
 {{--    </div>--}}
