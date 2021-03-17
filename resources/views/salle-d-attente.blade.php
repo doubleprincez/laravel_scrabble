@@ -97,6 +97,7 @@
 
                                         </li>
                                     @endif
+
                                     @if($players_count==$game->partie->typePartie)
                                         <li class="flex-item my-3 " style="position:absolute;bottom:0">
                                             <button class="btn btn-success"

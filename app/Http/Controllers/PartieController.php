@@ -40,8 +40,9 @@ class PartieController extends Controller
                 $game = $this->get_game_by_id((int)$game);
             }
         } else {
-            return redirect()->route('game.wait');
+            return redirect()->route('game.select');
         }
+
         return view('salle-d-attente', compact('game'));
 
     }
@@ -62,6 +63,11 @@ class PartieController extends Controller
             // get load previous game
             $game = $check_previous_game;
             // go to previous game
+// user has used up his chavolet, so we need to update with new
+            $position = $this->search_user_chavolet($game, $user_id);
+
+            // get if the player has no more playing piece left
+            $user_chavolet = $this->get_user_chavolet($game,$user_id,$position);
 
             return redirect()->route('game.wait', compact('game'));
         }

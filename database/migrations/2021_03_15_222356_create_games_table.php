@@ -27,6 +27,8 @@ class CreateGamesTable extends Migration
             $table->integer('user_2_score')->nullable()->default(0);
             $table->integer('user_3_score')->nullable()->default(0);
             $table->integer('user_4_score')->nullable()->default(0);
+            $table->integer('current_player')->nullable()->default(1);
+            $table->dateTime('start_time')->nullable()->default(now());
             $table->boolean('game_status')->nullable();
             $table->timestamps();
         });

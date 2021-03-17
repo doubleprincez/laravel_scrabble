@@ -32,7 +32,7 @@
     </div>
 
     <div class="rack-div">
-                @include('jeu.rack')
+{{--                @include('jeu.rack')--}}
     </div>
 
     <!-- <div class="logo">
@@ -43,8 +43,7 @@
         <h7><b>Nb lettres dans la reserve:</b>102</h7>
     </div>
     <div class="btcom">
-                @include('jeu.boite-communication')
-
+{{--                @include('jeu.boite-communication')--}}
     </div>
 
     <div class="topright1">1</div>

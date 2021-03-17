@@ -41,7 +41,7 @@ class Game extends Model
         return $this->belongsTo(User::class, 'user_id_4');
     }
 
-    public function comments()
+    public function messages()
     {
         return $this->hasMany(Message::class);
     }
