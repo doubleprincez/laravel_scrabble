@@ -9,12 +9,14 @@ class CreateMessagesTable extends Migration
     /**
      * Run the migrations.
      *
-     * @return void
+     * @return void   //if the player want to place a letter he must write this commande in his turn   !place\ligne> \cloum> in h/v the "word"  h=horizental  v =vertical
      */
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('game_id');
             $table->integer('envoyeur');
             $table->integer('partie');
             $table->string('contenu');

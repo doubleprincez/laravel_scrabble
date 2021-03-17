@@ -50,6 +50,7 @@ class LettresController extends Controller
 
     }
 
+
     public function game_ended()
     {
         // return game stat

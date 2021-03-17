@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
     <script src="{{ asset('js/photoupload.js') }}" defer></script>
     @yield('styles')
+
 </head>
 <body>
 
