@@ -45,4 +45,6 @@ class Game extends Model
     {
         return $this->hasMany(Message::class);
     }
+
+
 }

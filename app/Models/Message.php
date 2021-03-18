@@ -10,8 +10,8 @@ class Message extends Model
     use HasFactory;
 
 
-    protected function post_by()
+    public function post_by()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 }

@@ -1,4 +1,5 @@
-<div class="col-md-8 col-md-offset-2 bootstrap snippets bootdeys">
+<div class="  bootstrap snippets bootdeys">
+{{--    //col-md-8--}}
     <div class="widget-container scrollable list rollodex">
         <div class="heading" id="panneau">
             <i class="fa"></i>Information du jeu</i>

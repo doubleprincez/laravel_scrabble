@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Joueur;
-use App\Models\Lettres;
 use App\Traits\GameTraits;
 
 class LettresController extends Controller

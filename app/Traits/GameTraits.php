@@ -15,7 +15,7 @@ trait GameTraits
 
     private function get_game_by_id($game_id)
     {
-        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages'])->where('id', $game_id)->firstOrFail();
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages','messages.post_by'])->where('id', $game_id)->firstOrFail();
     }
 
     private function check_previous_game($user_id)
@@ -113,7 +113,7 @@ trait GameTraits
     private function check_all_user_game($user_id)
     {
         // and game is not empty
-        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages'])->where('user_id_1', $user_id)
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages' ])->where('user_id_1', $user_id)
             ->orWhere('user_id_2', $user_id)
             ->orWhere('user_id_3', $user_id)
             ->orWhere('user_id_4', $user_id);

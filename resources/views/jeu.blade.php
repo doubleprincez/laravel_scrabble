@@ -8,14 +8,13 @@
     <link rel="stylesheet" type="text/css" href="css/panneau.css"/>
     <link rel="stylesheet" type="text/css" href="css/rack.css"/>
     <link rel="stylesheet" type="text/css" href="css/jeu.css"/>
-    <link rel="stylesheet" type="text/css" href="css/boite-communication.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boite-communication.css') }}"/>
 
     <!-- Boite de communication  -->
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-
-    <!-- <script src="{{ asset('js/jeu.js') }}" defer></script> -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
     <!-- Styles -->
@@ -28,11 +27,11 @@
 
 
     <div class="panneau-inf">
-                @include('jeu.panneau')
+        @include('jeu.panneau')
     </div>
 
     <div class="rack-div">
-{{--                @include('jeu.rack')--}}
+        @include('jeu.rack')
     </div>
 
     <!-- <div class="logo">
@@ -40,10 +39,10 @@
 </div> -->
 
     <div class="reserve">
-        <h7><b>Nb lettres dans la reserve:</b>102</h7>
+        <h7><b>Nb lettres dans la reserve:</b>{{ $game->stock->sum('quantite') }}</h7>
     </div>
     <div class="btcom">
-{{--                @include('jeu.boite-communication')--}}
+        @include('jeu.boite-communication')
     </div>
 
     <div class="topright1">1</div>
@@ -77,8 +76,7 @@
     <div class="leftn">N</div>
     <div class="lefto">O</div>
     <div class="board_box">
-                @include('jeu.plateau')
-
+        @include('jeu.plateau')
     </div>
 
     <!--
@@ -88,5 +86,10 @@
     </div>
         <div style="border-radius:0.6vmin; padding:0.2vmin 1.5vmin; font-size:calc(8px + 1vmin); background:#7a1204; margin-top:1vmin; color:#fff; cursor:pointer;" class="endTurn">Quitter</div>
     </div>  -->
+
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/jeu.js') }}" defer></script>
 
 @endsection
