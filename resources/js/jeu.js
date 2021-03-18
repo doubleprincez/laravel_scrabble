@@ -4,7 +4,7 @@ class Board {
   constructor() {
     this.reset()
   } // End of constructor
-  
+
   reset(){
     this.grid = [
     [4, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 4],
@@ -25,10 +25,10 @@ class Board {
   ];
     this.letterGrid = [];
     for (var i = 1; i <= 10; i++) {
-      this.letterGrid.push(["","","","","","","","","",""]) 
+      this.letterGrid.push(["","","","","","","","","",""])
     }
   }
-  
+
 }
 class Tile {
   constructor(letter,value) {
@@ -84,7 +84,7 @@ class Bag {
     for ( var letter in this.letters) {
       var letterWeight = this.letters[letter][0]
       var score = this.letters[letter][1]
-      if (randomWeightValue - letterWeight <0) {      
+      if (randomWeightValue - letterWeight <0) {
         break;
       } else {
         randomWeightValue -= letterWeight;
@@ -96,7 +96,7 @@ class Bag {
     } else {
       this.letters[letter][0]--;
     }
-    return letter; 
+    return letter;
     // let letter = document.createElement("DIV");
     // letter.className = "letter";
     // letter.innerHTML = el + "<sub>" + score + "</sub>";
@@ -125,12 +125,11 @@ class Holder {
     var score = 1;
     letter.innerHTML = this.letters[i] + "<sub>" + score + "</sub>";
     letterContainer.insertBefore(letter, letterContainer.childNodes[2]);
-
   }
 }
-  
-  
-  
+
+
+
 }
 
 
@@ -317,7 +316,7 @@ function makeLetters() {
     for ( var el in letters) {
       var amount = letters[el][0]
       var score = letters[el][1]
-      if (r - amount <0) {      
+      if (r - amount <0) {
         break;
       } else {
         r-=amount;
@@ -380,7 +379,7 @@ $(function() {
       // $(this).css("margin-bottom", "0px");
     }
   });
-  
+
   $("#container .grid-item").droppable({
     drop: function(event, ui) {
       // alert($(this).index())
@@ -399,7 +398,7 @@ $(function() {
   $(".letter").sortable({
     tolerance: "pointer"
   });
-  
+
   $("#slider").slider({
     range: "max",
     orientation: "vertical",
@@ -421,7 +420,7 @@ $(function() {
   }),
   $(".ui-slider").css("background", "#FFFFF0");
   $(".ui-slider-range-min").css("background", "#FFE1C4");
-  
+
   if (window.matchMedia('(max-width: 850px)').matches) {
     $( "#slider" ).slider("value", 80);
   }
@@ -438,7 +437,7 @@ $(window).resize(function() {
   if(globalSnapTimer != null) window.clearTimeout(globalSnapTimer);
   globalSnapTimer = window.setTimeout(function() {
     setSnap();
-  }, 200); 
+  }, 200);
 });
 
 
@@ -486,7 +485,7 @@ closeModalButton.onclick = function() {
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
-    
+
   }
 }
 
