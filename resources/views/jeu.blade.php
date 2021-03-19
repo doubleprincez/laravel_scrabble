@@ -91,5 +91,55 @@
 
 @section('scripts')
     <script src="{{ asset('js/jeu.js') }}" defer></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $(document).ready(function () {
+            document.getElementById('btn-chat').addEventListener('click', function () {
+                var input = $('#btn-input').val();
+                var url = '{{ route('game.message') }}';
+                // only when there is input will it send
+                if (input) {
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
+                        success: function (data) {
+                            if (data) {
+                                console.log(data)
+                            }
+                        }
+                    });
+                }
+            })
+        });
+        setInterval(checkTime, 4000);
 
+        function checkTime() {
+            var url = '{{ route('game.checkTimer') }}';
+            // function to check if player time is still active
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
+                success: function (data) {
+                    if (data.active === true || data.active === 'true') {
+                        // notify current user of turn
+
+                    }
+                    var current = $('#player' + data.current_player);
+                    // remove any counter time
+                    var counters = $('.counter');
+                    counters.remove();
+                    // create new timer on the player that is active
+                    var timer = '<div class="counter">00:' + data.start_time + '</div>';
+                    current.append(timer);
+                }
+            })
+        }
+    </script>
 @endsection

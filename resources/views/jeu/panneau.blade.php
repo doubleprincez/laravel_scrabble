@@ -10,7 +10,7 @@
             </div>  -->
             <ul>
                 @if($game->player_1)
-                    <li>
+                    <li id="player1">
                         <img width="30" height="30" src="{{ asset($game->player_1->photo) }}"><a
                                 href="#">{{ $game->player_1->nick }}</a>
                         <div class="score"><b>score:</b>{{ $game->user_1_score }} | <b>nb lettres dans le
@@ -25,7 +25,7 @@
                     </li>
                 @endif
                 @if($game->player_2)
-                    <li>
+                    <li id="player2">
                         <img width="30" height="30" src="{{ asset($game->player_2->photo) }}"><a
                                 href="#">{{ $game->player_2->nick }}</a>
                         <div class="score"><b>score:</b>{{ $game->user_2_score }} | <b>nb lettres dans le
@@ -40,7 +40,7 @@
                     </li>
                 @endif
                     @if($game->player_3)
-                        <li>
+                        <li id="player3">
                             <img width="30" height="30" src="{{ asset($game->player_3->photo) }}"><a
                                     href="#">{{ $game->player_3->nick }}</a>
                             <div class="score"><b>score:</b>{{ $game->user_3_score }} | <b>nb lettres dans le
@@ -55,7 +55,7 @@
                         </li>
                     @endif
                     @if($game->player_4)
-                        <li>
+                        <li id="player4">
                             <img width="30" height="30" src="{{ asset($game->player_4->photo) }}"><a
                                     href="#">{{ $game->player_4->nick }}</a>
                             <div class="score"><b>score:</b>{{ $game->user_4_score }} | <b>nb lettres dans le

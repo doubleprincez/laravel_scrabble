@@ -6,16 +6,67 @@ namespace App\Traits;
 
 use App\Models\Game;
 use App\Models\Lettre;
+use App\Models\Message;
 use App\Models\Partie;
 use App\Models\Reserve;
 use App\Models\Stock;
+use Carbon\Carbon;
 
 trait GameTraits
 {
 
     private function get_game_by_id($game_id)
     {
-        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages','messages.post_by'])->where('id', $game_id)->firstOrFail();
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages', 'messages.post_by'])->where('id', $game_id)->firstOrFail();
+    }
+
+    private function update_game_timer($game, $user_id)
+    {
+        $now = now();
+        // get number of game players
+        $number_of_players = (int)$game->partie->typePartie;
+        // get game current player
+        $current_player = (int)$game->current_player;
+        // get current player start time
+        $start_time = Carbon::parse($game->start_time);
+
+        // if the time is greater than 1 min
+        if ($start_time->diffInSeconds($now) > 60) {
+
+            // check if the last player in the game is the one playing
+//            dd($current_player < $number_of_players);
+            if ($current_player < $number_of_players) {
+                $current_player++;
+            } else {
+                // if yes, then return to player one
+                $current_player = 1;
+            }
+            // lets wait and check
+            $game->current_player = $current_player;
+            $game->start_time = $now;
+            $game->save();
+        }
+        // boolean to know if current user is the one to play
+        $active = $game->current_player == $user_id;
+
+        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active];
+    }
+
+    private function message_manager($game, $user_id, $message)
+    {
+        $new_chat = new Message();
+        // get message
+        $check_pattern = regex('');
+        // if message does not contain command then upload as just chat
+        if ($check_pattern) {
+
+        }
+        $new_chat->user_id = $user_id;
+        $new_chat->game_id = $game->id;
+        $new_chat->contenu = $message;
+        $new_chat->position = 1;
+        $new_chat->save();
+
     }
 
     private function check_previous_game($user_id)
@@ -113,7 +164,7 @@ trait GameTraits
     private function check_all_user_game($user_id)
     {
         // and game is not empty
-        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages' ])->where('user_id_1', $user_id)
+        return Game::with(['stock', 'partie', 'player_1', 'player_2', 'player_3', 'player_4', 'messages'])->where('user_id_1', $user_id)
             ->orWhere('user_id_2', $user_id)
             ->orWhere('user_id_3', $user_id)
             ->orWhere('user_id_4', $user_id);

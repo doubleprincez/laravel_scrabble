@@ -17,7 +17,6 @@ class CreateMessagesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('game_id');
-            $table->integer('envoyeur')->nullable();
             $table->integer('position');
             $table->text('contenu');
             $table->timestamps();

@@ -33,26 +33,28 @@
                             @foreach($game->messages->take(6) as $msg)
                                 @if($msg->post_by->id == auth()->id())
                                     <li class="right clearfix"><span class="chat-img pull-right">
-                                    @else
-                                <li class="left clearfix"><span class="chat-img pull-left">
+                                @else
+                                    <li class="left clearfix"><span class="chat-img pull-left">
                                         @endif
-                            <img width="40" height="40" src="{{ asset($msg->post_by->photo) }}" alt="{{ $msg->post_by->nick }} Avatar"
+                            <img width="40" height="40" src="{{ asset($msg->post_by->photo) }}"
+                                 alt="{{ $msg->post_by->nick }} Avatar"
                                  class="img-circle"/>
 
                         </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">{{ $msg->post_by->nick }}</strong> <small
-                                                    class="pull-right text-muted">
-                                                <span class="glyphicon glyphicon-time"></span>{{$msg->post_by->created_at->shortRelativeToNowDiffForHumans() }}</small>
+                                        <div class="chat-body clearfix">
+                                            <div class="header     @if($msg->post_by->id == auth()->id()) text-right @endif">
+                                                <strong class="primary-font">{{ $msg->post_by->nick }}</strong> <small
+                                                        class="pull-right text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{$msg->post_by->created_at->shortRelativeToNowDiffForHumans() }}
+                                                </small>
+                                            </div>
+                                            <p>
+                                                {{ $msg->contenu }}
+                                            </p>
                                         </div>
-                                        <p>
-                                         {{ $msg->contenu }}
-                                        </p>
-                                    </div>
-                                </li>
-                            @endforeach
-                        @endif
+                                    </li>
+                                    @endforeach
+                                @endif
                     </ul>
                 </div>
                 <div class="panel-footer">

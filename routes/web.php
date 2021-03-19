@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JeuAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoueurController;
 use App\Http\Controllers\LettresController;
@@ -50,7 +51,6 @@ Route::get('/game_wait', [PartieController::class, 'wait'])->name('game.wait');
 Route::get('/jeu', [LettresController::class, 'ChoisirLettresAléatoiresDuReserve'])->name('jeu');
 
 // quitter game
-
 Route::get('/quitter', [PartieController::class, 'quitter'])->name('game.quitter');
 
 // game has ended
@@ -61,3 +61,9 @@ Auth::routes();
 
 // login home
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// game timer function
+Route::post('game/check_timer',[JeuAPIController::class,'check_timer'])->name('game.checkTimer');
+
+// handle message and chat
+Route::post('game/message',[JeuAPIController::class,'message'])->name('game.message');

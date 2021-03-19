@@ -24,7 +24,6 @@ class MessageFactory extends Factory
     {
         return [
             'contenu'=>$this->faker->paragraph,
-            'envoyeur'=>$this->faker->numberBetween(1,4)
         ];
     }
 }
