@@ -55,6 +55,7 @@ trait GameTraits
     private function message_manager($game, $user_id, $message)
     {
         $new_chat = new Message();
+        $alert = "error";
         // get message !parser
         $check_pattern = preg_match("/!placer/i", $message);
 
@@ -65,24 +66,29 @@ trait GameTraits
             $split = explode('placer', $small);
             $placer = explode(' ', trim($split[1]));
             $position = $placer[0];
+            $direction = substr($position, -1, 1); // e.g h/v horizontal/vertical
+            $matrix = substr($position, 0, -1); // e.g g15
             $word = $placer[1];
 
             // check if word is in dictionary
             $in_dictionary = $this->check_dic($word);
             if ($in_dictionary == true) {
-                // check if the words are in player Chevalet
-                $this->check_words_in_chavalet($game, $user_id, $word);
+                // check if the words are in player chavolet
+                $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $word);
+                if($check_chavolet == true){
+                    //TODO check if the direction of the word is ok
+                    $this->check_word_direction($game, $word);
 
-                //TODO check if the direction of the word is ok
-                $this->check_word_direction($game, $word);
+                    // TODO calculate the player's score
+                    $this->calculate_player_score($game, $user_id, $word);
 
-                // TODO calculate the player's score
-                $this->calculate_player_score($game, $user_id, $word);
+                    // TODO remove player chavolet for the word
 
-                // TODO remove player chevalet for the word
+                    // message
+                    $msg = "Word played successfully";
+                    $alert = "success";
+                }
 
-                // message
-                $msg = "Word played successfully";
 
             } else {
                 // message
@@ -96,12 +102,23 @@ trait GameTraits
         $new_chat->game_id = $game->id;
         $new_chat->contenu = $message;
         $new_chat->position = 1;
-        return $new_chat->save();
+//        return $new_chat->save();
     }
 
-    private function check_words_in_chevalet($game, $user_id, $word)
+    private function check_words_in_chavolet($game, $user_id, $word)
     {
+        $position = $this->search_user_chavolet($game, $user_id);
 
+        // get if the player has no more playing piece left
+        $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
+        $failed = 0;
+        // TODO more validations can be added for reoccurring numbers
+
+        foreach ($a = str_split($word) as $letter) {
+            // check if letters are all in the chavolet
+            if (!$user_chavolet->contains($letter)) $failed++;
+        }
+        return $failed != 0;
     }
 
     private function check_word_direction($game, $word)
@@ -294,11 +311,11 @@ trait GameTraits
         return $game;
     }
 
-    private function generate_valeur($user_chevalet)
+    private function generate_valeur($user_chavolet)
     {
 
         $valeur = [];
-        foreach ($user_chevalet as $i) {
+        foreach ($user_chavolet as $i) {
 
             if ($i != "" && $i != null) {
                 $valeur[] = Lettre::where('lettre', '=', $i)->first(['lettre', 'valeur']);

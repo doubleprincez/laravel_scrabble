@@ -26,7 +26,7 @@ class LettresController extends Controller
 
         // check if the game has finished or is still running
         if ($this->check_game_finished($game)) {
-
+            $this->update_game_timer($game, $user_id);
 // user has used up his chavolet, so we need to update with new
             $position = $this->search_user_chavolet($game, $user_id);
 
