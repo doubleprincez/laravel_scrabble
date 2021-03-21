@@ -24,9 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->avatar) {
-            return redirect()->route('game.select');
 
+        if (auth()->user()->photo) {
+            return redirect()->route('game.select');
         }else{
             $nick = $this->generate_nick();
             return view('acceuil')->with(compact('nick'));
@@ -35,8 +35,9 @@ class HomeController extends Controller
 
     public function ready()
     {
+
         // check if user already has avatar
-        if (auth()->user()->avatar) {
+        if (auth()->user()->photo) {
             return redirect()->route('game.select');
 
         } else {

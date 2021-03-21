@@ -90,6 +90,7 @@
 @endsection
 
 @section('scripts')
+    <script rel="stylesheet" src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jeu.js') }}" defer></script>
     <script>
         $.ajaxSetup({
@@ -101,12 +102,17 @@
             document.getElementById('btn-chat').addEventListener('click', function () {
                 var input = $('#btn-input').val();
                 var url = '{{ route('game.message') }}';
+                // link to dictionary;
+
+
                 // only when there is input will it send
                 if (input) {
+                    // first check if word exists in the dictionary
+
                     $.ajax({
                         url: url,
                         type: 'post',
-                        data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
+                        data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }},message:input },
                         success: function (data) {
                             if (data) {
                                 console.log(data)
@@ -116,7 +122,7 @@
                 }
             })
         });
-        setInterval(checkTime, 4000);
+        // setInterval(checkTime, 4000);
 
         function checkTime() {
             var url = '{{ route('game.checkTimer') }}';

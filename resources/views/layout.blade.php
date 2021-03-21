@@ -6,6 +6,14 @@
     <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/gif" sizes="16x16">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/photoupload.css') }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @if(config('app.env')=='local')
+        <link rel="stylesheet" href="{{ asset('css/all.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+        <script rel="stylesheet" src="{{ asset('js/jquery-1.9.1.min.js') }}"></script>
+        <script rel="stylesheet" src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script rel="stylesheet" src="{{ asset('js/popper.min.js') }}"></script>
+    @else
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
               integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
               crossorigin="anonymous"/>
@@ -16,7 +24,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+    @endif
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
     <script src="{{ asset('js/photoupload.js') }}" defer></script>
     @yield('styles')

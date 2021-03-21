@@ -55,18 +55,83 @@ trait GameTraits
     private function message_manager($game, $user_id, $message)
     {
         $new_chat = new Message();
-        // get message
-        $check_pattern = regex('');
+        // get message !parser
+        $check_pattern = preg_match("/!placer/i", $message);
+
         // if message does not contain command then upload as just chat
         if ($check_pattern) {
+            // convert each letter to small letters
+            $small = strtolower($message);
+            $split = explode('placer', $small);
+            $placer = explode(' ', trim($split[1]));
+            $position = $placer[0];
+            $word = $placer[1];
+
+            // check if word is in dictionary
+            $in_dictionary = $this->check_dic($word);
+            if ($in_dictionary == true) {
+                // check if the words are in player Chevalet
+                $this->check_words_in_chavalet($game, $user_id, $word);
+
+                //TODO check if the direction of the word is ok
+                $this->check_word_direction($game, $word);
+
+                // TODO calculate the player's score
+                $this->calculate_player_score($game, $user_id, $word);
+
+                // TODO remove player chevalet for the word
+
+                // message
+                $msg = "Word played successfully";
+
+            } else {
+                // message
+                $msg = 'Word is not in dictionary';
+
+            }
 
         }
+        // save current play as player play details
         $new_chat->user_id = $user_id;
         $new_chat->game_id = $game->id;
         $new_chat->contenu = $message;
         $new_chat->position = 1;
-        $new_chat->save();
+        return $new_chat->save();
+    }
 
+    private function check_words_in_chevalet($game, $user_id, $word)
+    {
+
+    }
+
+    private function check_word_direction($game, $word)
+    {
+        // use the game to get the board, then use the board to determine the direction the player is about to play the game
+
+
+    }
+
+    private function calculate_player_score($game, $user_id, $word)
+    {
+
+    }
+
+    private function check_dic($word)
+    {
+        $file = json_decode($this->get_dictionary());
+        $lookup = collect($file);
+        return $lookup->contains($word);
+    }
+
+    private function get_dictionary()
+    {
+        $doc = public_path('liste.de.mots.json');
+        $data = file_get_contents($doc);
+//        $curl = curl_init($doc);
+//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+//        $data = curl_exec($curl);
+//        curl_close($curl);
+        return json_decode(json_encode($data), true);
     }
 
     private function check_previous_game($user_id)
@@ -96,6 +161,7 @@ trait GameTraits
         if ($checker == true) {
             // break out of the loop returning that game
             return $game;
+
         }
         return false;
     }
