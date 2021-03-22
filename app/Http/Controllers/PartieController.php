@@ -93,6 +93,7 @@ class PartieController extends Controller
         // another game till the game ends.
         $check_previous_game = $this->check_previous_game($user_id);
 
+
         if ($check_previous_game != false) {
             // get load previous game
             $game = $check_previous_game;
@@ -105,11 +106,9 @@ class PartieController extends Controller
 
             return redirect()->route('game.wait', compact('game'));
         }
-
         $request->validate([
             'typePartie' => 'required',
         ]);
-
         $type = (int)trim($request->get('typePartie'));
 
         // here we create the game

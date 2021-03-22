@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Partie extends Model
 {
     protected $table = 'partie';
-    protected $fillable = ['typePartie', 'Reserve', 'grille', 'dateCreation', 'dateDebutPartie', 'dateFin', 'statutPartie'];
+
+    protected $guarded = [];
+
     public $timestamps = false;
 
     public function game()

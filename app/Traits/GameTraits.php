@@ -269,21 +269,17 @@ trait GameTraits
             'user_id_1' => $user_id,
             'game_status' => true
         ]);
-        $this->create_new_game_user_chavolet($game->id, $game);
         // create partie for game
-        $this->create_partie($game->id, $type);
+        $this->create_partie($game, $type);
         // create stock for game
-        $this->create_game_stock($game->id);
+        $this->create_game_stock($game);
+
+        $this->create_new_game_user_chavolet($game, $user_id);
         return $game->load('player_1');
     }
 
-    private function create_new_game_user_chavolet(int $game_id, Game $game = null)
+    private function create_new_game_user_chavolet($game, $user_id)
     {
-        if ($game != null) {
-            // get game
-            $game = Game::where('id', $game_id)->first();
-        }
-
         // store it into first user chavolet
         $this->store_chavolet($game, 'user_1_chavolet');
     }
@@ -297,21 +293,21 @@ trait GameTraits
 
     }
 
-    private function create_partie(int $game_id, int $type)
+    private function create_partie(Game $game, int $type)
     {
         return Partie::create([
-            'game_id' => $game_id,
+            'game_id' => $game->id,
             'dateDebutPartie' => now(),
             'typePartie' => $type
         ]);
     }
 
-    private function create_game_stock(int $game_id)
+    private function create_game_stock(Game $game)
     {
         $reserve = Reserve::all();
         foreach ($reserve as $item) {
             Stock::create([
-                'game_id' => $game_id,
+                'game_id' => $game->id,
                 'lettre' => $item->lettre,
                 'quantite' => $item->quantite
             ]);
@@ -326,8 +322,6 @@ trait GameTraits
             ->orWhere('user_id_2', $user_id)
             ->orWhere('user_id_3', $user_id)
             ->orWhere('user_id_4', $user_id);
-
-
     }
 
     private function get_user_chavolet($game, $user_id, $position)
@@ -376,7 +370,6 @@ trait GameTraits
                 $removed_letter->quantite = $qty--;
                 $removed_letter->save();
                 $parse[$rand]->quantite--;
-
                 $game_stock[$rand]->save(['quantite' => $qty]);
             }
 
@@ -387,8 +380,8 @@ trait GameTraits
         $game = $this->get_game_by_id($game_id);
         $game->$user_chavolet = json_encode($stack);
         $game->save();
-
-        return $game;
+        // return array pieces picked from the game stock
+        return $stack;
     }
 
     private function generate_valeur($user_chavolet)
