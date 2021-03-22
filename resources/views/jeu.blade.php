@@ -39,7 +39,7 @@
 </div> -->
 
     <div class="reserve">
-        <h6><b>Nb lettres dans la reserve:</b>{{ $game->stock->sum('quantite') }}</h6>
+        <h6><b>Nb lettres dans la reserve:</b>{{ $game->stock->remaining() }}</h6>
     </div>
     <div class="btcom">
         @include('jeu.boite-communication')

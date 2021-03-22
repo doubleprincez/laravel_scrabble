@@ -28,7 +28,7 @@ class JeuAPIController extends Controller
             // TODO then send details of current stock for he game as it is reducing
             $stock = $game->stock->remaining();
 
-            return response()->json([compact('game', 'stock').$update_time]);
+            return response()->json($update_time+['game'=>$game,'stock'=>$stock]);
         }
     }
 

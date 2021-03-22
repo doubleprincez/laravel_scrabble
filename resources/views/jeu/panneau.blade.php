@@ -1,5 +1,5 @@
 <div class="  bootstrap snippets bootdeys">
-{{--    //col-md-8--}}
+    {{--    //col-md-8--}}
     <div class="widget-container scrollable list rollodex">
         <div class="heading" id="panneau">
             <i class="fa"></i>Information du jeu</i>
@@ -39,36 +39,36 @@
                         @endif
                     </li>
                 @endif
-                    @if($game->player_3)
-                        <li id="player3">
-                            <img width="30" height="30" src="{{ asset($game->player_3->photo) }}"><a
-                                    href="#">{{ $game->player_3->nick }}</a>
-                            <div class="score"><b>score:</b>{{ $game->user_3_score }} | <b>nb lettres dans le
-                                    chevalet:</b>{{ $game->user_3_chavolet?count(json_decode($game->user_3_chavolet)):0 }}
-                            </div>
-                            @if($game->current_player==3)
-                                <?php $start = \Carbon\Carbon::parse($game->start_time);
-                                $time = $start->diff(now())->format('%H:%i:%s');
-                                ?>
-                                <div class="counter">{{ $time }}</div>
-                            @endif
-                        </li>
-                    @endif
-                    @if($game->player_4)
-                        <li id="player4">
-                            <img width="30" height="30" src="{{ asset($game->player_4->photo) }}"><a
-                                    href="#">{{ $game->player_4->nick }}</a>
-                            <div class="score"><b>score:</b>{{ $game->user_4_score }} | <b>nb lettres dans le
-                                    chevalet:</b>{{ $game->user_4_chavolet?count(json_decode($game->user_4_chavolet)):0 }}
-                            </div>
-                            @if($game->current_player==4)
-                                <?php $start = \Carbon\Carbon::parse($game->start_time);
-                                $time = $start->diff(now())->format('%H:%i:%s');
-                                ?>
-                                <div class="counter">{{ $time }}</div>
-                            @endif
-                        </li>
-                    @endif
+                @if($game->player_3)
+                    <li id="player3">
+                        <img width="30" height="30" src="{{ asset($game->player_3->photo) }}"><a
+                                href="#">{{ $game->player_3->nick }}</a>
+                        <div class="score"><b>score:</b>{{ $game->user_3_score }} | <b>nb lettres dans le
+                                chevalet:</b>{{ $game->user_3_chavolet?count(json_decode($game->user_3_chavolet)):0 }}
+                        </div>
+                        @if($game->current_player==3)
+                            <?php $start = \Carbon\Carbon::parse($game->start_time);
+                            $time = $start->diff(now())->format('%H:%i:%s');
+                            ?>
+                            <div class="counter">{{ $time }}</div>
+                        @endif
+                    </li>
+                @endif
+                @if($game->player_4)
+                    <li id="player4">
+                        <img width="30" height="30" src="{{ asset($game->player_4->photo) }}"><a
+                                href="#">{{ $game->player_4->nick }}</a>
+                        <div class="score"><b>score:</b>{{ $game->user_4_score }} | <b>nb lettres dans le
+                                chevalet:</b>{{ $game->user_4_chavolet?count(json_decode($game->user_4_chavolet)):0 }}
+                        </div>
+                        @if($game->current_player==4)
+                            <?php $start = \Carbon\Carbon::parse($game->start_time);
+                            $time = $start->diff(now())->format('%H:%i:%s');
+                            ?>
+                            <div class="counter">{{ $time }}</div>
+                        @endif
+                    </li>
+                @endif
             </ul>
 
         </div>

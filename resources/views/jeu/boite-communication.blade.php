@@ -54,7 +54,7 @@
                                             <div class="header     @if($msg->post_by->id == auth()->id()) text-right @endif">
                                                 <strong class="primary-font">{{ $msg->post_by->nick }}</strong> <small
                                                         class="pull-right text-muted">
-                                                    <span class="glyphicon glyphicon-time"></span>{{$msg->post_by->created_at->shortRelativeToNowDiffForHumans() }}
+                                                    <span class="glyphicon glyphicon-time"></span>{{ $msg->post_by->created_at->shortRelativeToNowDiffForHumans() }}
                                                 </small>
                                             </div>
                                             <p>
