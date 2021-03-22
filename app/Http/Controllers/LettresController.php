@@ -30,11 +30,16 @@ class LettresController extends Controller
 // user has used up his chavolet, so we need to update with new
             $position = $this->search_user_chavolet($game, $user_id);
 
+            if ($position == null) {
+                // user might have entered a game id but was never part of the game
+                return redirect()->route('game.select');
+            }
             // get if the player has no more playing piece left
             $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
 
             $valeur = $this->generate_valeur($user_chavolet);
 
+            $game = $this->get_game_by_id((int)request()->get('game'));
             return view('jeu')->with(compact('game', 'valeur', 'position'));
 
         } else {

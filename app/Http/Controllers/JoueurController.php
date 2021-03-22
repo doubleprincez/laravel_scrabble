@@ -24,7 +24,7 @@ class JoueurController extends Controller
     {
         dd('here');
         $joueur = Joueur::all()->toArray(); /* toArray methode will convert to array format to stored in $joueur variable */
-        return view('index', compact('joueur')); /* this compact function will create  an array from  $joueurs which we can access in index file folder  */
+        return view('index', compact('joueur')); /* this compact function will create  an array from  $joueur which we can access in index file folder  */
     }
 
 

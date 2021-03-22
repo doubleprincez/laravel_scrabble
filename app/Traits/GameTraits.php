@@ -63,7 +63,7 @@ trait GameTraits
         if ($check_pattern) {
             // convert each letter to small letters
             $small = strtolower($message);
-            $split = explode('placer', $small);
+            $split = explode('!placer', $small);
             $placer = explode(' ', trim($split[1]));
             $position = $placer[0];
             $direction = substr($position, -1, 1); // e.g h/v horizontal/vertical
@@ -72,21 +72,34 @@ trait GameTraits
 
             // check if word is in dictionary
             $in_dictionary = $this->check_dic($word);
+
             if ($in_dictionary == true) {
                 // check if the words are in player chavolet
                 $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $word);
-                if($check_chavolet == true){
-                    //TODO check if the direction of the word is ok
-                    $this->check_word_direction($game, $word);
 
+                if ($check_chavolet == true) {
+                    //TODO check if the direction of the word is ok
+                    $c = $this->check_word_direction($game, $word);
+
+                    dd($c);
                     // TODO calculate the player's score
                     $this->calculate_player_score($game, $user_id, $word);
 
                     // TODO remove player chavolet for the word
+                    $this->remove_words_from_player_chavolet($game, $user_id, $word);
 
+                    // TODO save game to board
+//                    $game->board()->create([
+//                        'player_id' => $user_id,
+//                        'direction' => $direction,
+//                        'position' => $matrix,
+//                        'word' => $word
+//                    ]);
                     // message
                     $msg = "Word played successfully";
                     $alert = "success";
+                } else {
+                    $msg = "Word is not in your Chavolet";
                 }
 
 
@@ -103,6 +116,14 @@ trait GameTraits
         $new_chat->contenu = $message;
         $new_chat->position = 1;
 //        return $new_chat->save();
+        // return mgs, alert, communication
+        dd('here');
+        return ['alert' => $alert, 'message' => $msg];
+    }
+
+    private function remove_words_from_player_chavolet($game, $user_id, $word)
+    {
+
     }
 
     private function check_words_in_chavolet($game, $user_id, $word)
@@ -118,12 +139,15 @@ trait GameTraits
             // check if letters are all in the chavolet
             if (!$user_chavolet->contains($letter)) $failed++;
         }
-        return $failed != 0;
+        return $failed == 0;
     }
+
 
     private function check_word_direction($game, $word)
     {
-        // use the game to get the board, then use the board to determine the direction the player is about to play the game
+        // use the game to get the board
+        $width = [];
+        $height = [];
 
 
     }
@@ -183,12 +207,63 @@ trait GameTraits
         return false;
     }
 
-    public function check_game_finished($game)
+    private function select_any_waiting_game()
+    {
+        return Game::with(['stock', 'partie'])->inRandomOrder()->get()->map(function ($game) {
+
+            $counter = 0;
+            if ($game->user_id_1) {
+                $counter++;
+            }
+            if ($game->user_id_2) {
+                $counter++;
+            }
+            if ($game->user_id_3) {
+                $counter++;
+            }
+            if ($game->user_id_4) {
+                $counter++;
+            }
+            return (int)$counter !== (int)$game->partie->typePartie ? $game : null;
+        })->first();
+
+    }
+
+    private function check_game_finished($game)
     {
         return $this->check_game_stock($game);
     }
 
-    public function create_game(int $user_id, int $type)
+    private function add_player_to_game($game, $user_id, $position)
+    {
+        $user_position = 'user_id_' . $position;
+        $game->$user_position = $user_id;
+        $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
+        return $user_chavolet;
+    }
+
+    private function get_empty_position($game)
+    {
+        if ($game->user_id_4) {
+            return null;
+        }
+        if ($game->user_id_3) {
+            return 4;
+        }
+        if ($game->user_id_2) {
+            return 3;
+        }
+        if ($game->user_id_1) {
+            return 2;
+        }
+    }
+
+    private function get_user_game_position($game, int $user_id)
+    {
+        return $this->search_user_chavolet($game, $user_id);
+    }
+
+    private function create_game(int $user_id, int $type)
     {
         $game = Game::create([
             'user_id_1' => $user_id,
@@ -289,19 +364,24 @@ trait GameTraits
         $condition = $count < 7 ? $count : 7;
         // empty stack for holding new items we are about to pick from stock
         $stack = array();
+        $parse = $game_stock;
         for ($i = 0; $i < $condition; $i++) {
             // generate random values using the condition stated above
             $rand = random_int(1, $condition);
             //
-            $removed_letter = $game_stock[$rand];
+            $removed_letter = $parse[$rand];
             if ($removed_letter->quantite > 0) {
                 $stack[] = $removed_letter->lettre;
                 $qty = (int)$removed_letter->quantite;
                 $removed_letter->quantite = $qty--;
                 $removed_letter->save();
+                $parse[$rand]->quantite--;
+
+                $game_stock[$rand]->save(['quantite' => $qty]);
             }
 
         }
+
         // pass values in the stack into user_chavolet
         $user_chavolet = 'user_' . $position . '_chavolet';
         $game = $this->get_game_by_id($game_id);
@@ -358,8 +438,7 @@ trait GameTraits
     }
 
 
-    private
-    function search_user_chavolet($game, int $user_id)
+    private function search_user_chavolet($game, int $user_id)
     {
         if ((int)$game->user_id_1 == $user_id) {
             return 1;

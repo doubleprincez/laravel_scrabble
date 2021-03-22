@@ -43,7 +43,7 @@
                                                 <div class="col-2">
                                                     <img
                                                             src="{{ asset($game->player_1->photo) }}"
-                                                            class="img-thumbnail" style="width:50px;heigth:50px">
+                                                            class="" style="width:50px;heigth:50px">
                                                 </div>
                                                 <div class="col-10 ">
                                                     <h4 class="text-info">{{ $game->player_1->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
@@ -58,7 +58,7 @@
                                                 <div class="col-2">
                                                     <img
                                                             src="{{ asset($game->player_2->photo) }}"
-                                                            class="img-thumbnail" style="width:50px;heigth:50px">
+                                                            class="" style="width:50px;heigth:50px">
                                                 </div>
                                                 <div class="col-10 ">
                                                     <h4 class="text-info">{{ $game->player_2->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
@@ -73,7 +73,7 @@
                                                 <div class="col-2">
                                                     <img
                                                             src="{{ asset($game->player_3->photo) }}"
-                                                            class="img-thumbnail" style="width:50px;heigth:50px">
+                                                            class="" style="width:50px;heigth:50px">
                                                 </div>
                                                 <div class="col-10 ">
                                                     <h4 class="text-info">{{ $game->player_3->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>
@@ -88,7 +88,7 @@
                                                 <div class="col-2">
                                                     <img
                                                             src="{{ asset($game->player_4->photo) }}"
-                                                            class="img-thumbnail" style="width:50px;heigth:50px">
+                                                            class="" style="width:50px;heigth:50px">
                                                 </div>
                                                 <div class="col-10 ">
                                                     <h4 class="text-info">{{ $game->player_4->nick }} &nbsp; <i class="fa fa-dot-circle text-success"></i></h4>

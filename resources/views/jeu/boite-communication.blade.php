@@ -6,7 +6,7 @@
                     <span class="fa"></span> Boite de communication
                 </div>
                 <div class="panel-body">
-                    <ul class="chat">
+                    <ul id="chat" class="chat">
                         <li class="left clearfix"><span class="chat-img pull-left">
                             <img width="40" height="40" src="{{ asset('img/scrabblelogo.png') }}" alt="User Avatar"
                                  class="img-circle"/>
@@ -16,8 +16,17 @@
                                     <strong class="primary-font">!Aide</strong>
                                 </div>
                                 <div class="text">
-                                    <p>
-                                        Bonjour! Afin de pouvoir effectuer les tâches ci-dessous, vous pouvez utiliser
+                                    <p><?php
+                                        $time = date('H');
+                                        if ($time < "12") {
+                                            $g = "Bonjour!";
+                                        } elseif ($time >= "12" && $time < "17") {
+                                            $g = "Bon apres-midi!";
+                                        } else {
+                                            $g = "Bon Sour!";
+                                        }
+                                        ?>
+                                        {{ $g }} Afin de pouvoir effectuer les tâches ci-dessous, vous pouvez utiliser
                                         ces 5 commandes:<br>
                                         <b>1. Placer un mot:</b> !placer ligne colonne (h|v) mot<br>
                                         <b>2. Changer une lettre:</b> !changer lettre<br>

@@ -23,8 +23,37 @@ class PartieController extends Controller
      */
     public function index()
     {
-//        $partie = Partie::all()->toArray();, compact('partie')
-        return view('type-partie');
+
+        $user_id = auth()->id();
+        // check if user has any active game 
+        $check_previous_game = $this->check_previous_game($user_id);
+
+        if ($check_previous_game !== false) {
+            $game = $check_previous_game;
+            return redirect()->route('game.wait', compact('game'));
+        } else {
+            // user does not have any active game so add user to a new game
+            // get all active games
+            $game = $this->select_any_waiting_game();      // add user to an empty
+            if ($game) {
+                // if there are active games then add user to one of them
+                $position = $this->get_empty_position($game);
+                // add current user to game
+                $this->add_player_to_game($game, $user_id, $position);
+                // update game timer to accommodate new user
+                $this->update_game_timer($game, $user_id);
+                // if game is active, redirect back to game
+                return redirect()->route('game.wait', compact('game'));
+            } else {
+                //user can create new game
+                return view('type-partie');
+            }
+
+
+        }
+        // if no active game, then create new one
+//
+//
     }
 
     /**
@@ -33,11 +62,16 @@ class PartieController extends Controller
      */
     public function wait()
     {
-
         if (request()->has('game')) {
-            $game = request()->get('game');
-            if (gettype($game) != "object") {
-                $game = $this->get_game_by_id((int)$game);
+            $game_id = (int)request()->get('game');
+            $game = $this->get_game_by_id($game_id);
+            if (!$game) {
+                return redirect()->route('game.ready');
+            }
+            $user_id = auth()->id();
+            if ($this->get_user_game_position($game, $user_id) == null) {
+                // user is not a part of this game but tried to access the game link
+                return redirect()->route('game.ready');
             }
         } else {
             return redirect()->route('game.select');
@@ -67,7 +101,7 @@ class PartieController extends Controller
             $position = $this->search_user_chavolet($game, $user_id);
 
             // get if the player has no more playing piece left
-            $user_chavolet = $this->get_user_chavolet($game,$user_id,$position);
+            $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
 
             return redirect()->route('game.wait', compact('game'));
         }
@@ -88,9 +122,28 @@ class PartieController extends Controller
 
     }
 
-    private function quitter()
+    public function quitter()
     {
-        dd(request()->all());
+        $user_id = auth()->id();
+        if (request()->has('game')) {
+            // get game
+            $game = $this->get_game_by_id((int)request()->get('game'));
+
+            // get the position of the player in  game
+            $position = $this->get_user_game_position($game, $user_id);
+            if ($position != null) {
+                $remove_user = 'user_id_' . $position;
+                $remove_chavolet = 'user_' . $position . '_chavolet';// we will not remove user chavolet, rather we will let any new user joining the game to take that spot and continue
+                $game->$remove_user = null;
+                $game->save();
+                return redirect()->route('game.ready')->with(['Resultat' => 'Game Quitted']);
+            } else {
+                return back()->with(['error' => 'Cannot Find Game']);
+            }
+        } else {
+            return back()->with(['error' => 'No Game Selected']);
+        }
+
 
     }
 

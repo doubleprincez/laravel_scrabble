@@ -39,7 +39,7 @@
 </div> -->
 
     <div class="reserve">
-        <h7><b>Nb lettres dans la reserve:</b>{{ $game->stock->sum('quantite') }}</h7>
+        <h6><b>Nb lettres dans la reserve:</b>{{ $game->stock->sum('quantite') }}</h6>
     </div>
     <div class="btcom">
         @include('jeu.boite-communication')
@@ -102,6 +102,7 @@
             document.getElementById('btn-chat').addEventListener('click', function () {
                 var input = $('#btn-input').val();
                 var url = '{{ route('game.message') }}';
+                var chatBox = document.getElementById('chat');
                 // link to dictionary;
 
 
@@ -112,16 +113,19 @@
                     $.ajax({
                         url: url,
                         type: 'post',
-                        data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }},message:input },
+                        data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}, message: input},
                         success: function (data) {
                             if (data) {
-                                console.log(data)
+                                console.log(data);
+                                // TODO append new chat message to array of chatBox
+
                             }
                         }
                     });
                 }
             })
         });
+
         // setInterval(checkTime, 4000);
 
         function checkTime() {

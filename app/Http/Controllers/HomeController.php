@@ -35,7 +35,6 @@ class HomeController extends Controller
 
     public function ready()
     {
-
         // check if user already has avatar
         if (auth()->user()->photo) {
             return redirect()->route('game.select');
