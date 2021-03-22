@@ -15,4 +15,9 @@ class Stock extends Model
     {
         return $this->belongsTo(Game::class);
     }
+
+    public function remaining()
+    {
+        return $this->where('quantite', '!=', 0)->count();
+    }
 }
