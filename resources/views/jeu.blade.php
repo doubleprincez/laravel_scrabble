@@ -39,7 +39,7 @@
 </div> -->
 
     <div class="reserve">
-        <h6><b>Nb lettres dans la reserve:</b>{{ $game->stock->remaining() }}</h6>
+        <h6><b>Nb lettres dans la reserve:</b><span id="stock">{{ $game->stock->remaining() }}</span></h6>
     </div>
     <div class="btcom">
         @include('jeu.boite-communication')
@@ -144,6 +144,7 @@
                     var current = $('#player' + data.current_player);
                     // remove any counter time
                     var counters = $('.counter');
+                    $('#stock').text(data.stock);
                     counters.remove();
                     // create new timer on the player that is active
                     var timer = '<div class="counter">00:' + data.start_time + '</div>';

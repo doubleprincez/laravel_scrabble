@@ -18,6 +18,6 @@ class Stock extends Model
 
     public function remaining()
     {
-        return $this->where('quantite', '!=', 0)->count();
+        return $this->where('quantite', '!=', 0)->sum('quantite');
     }
 }
