@@ -21,7 +21,8 @@
                                 Choisir avatar<input type="file" id="photo" name="photo" class="uploadFile img"
                                                      value="Upload Photo" style="display: none;">
                             </label>
-
+                            @error('photo')
+                            <div class="alert alert-danger">{{ $message }}</div> @enderror
                         </div>
                     </div>
                     <div class="form-group row">
@@ -29,7 +30,8 @@
 
                         <div class="col-6">
                             <input id="nom" type="text" class="form-control @error('nick') is-invalid @enderror"
-                                   name="nick" value="{{ isset($nick)?$nick:old('nick') }}" required autocomplete="nick" autofocus>
+                                   name="nick" value="{{ isset($nick)?$nick:old('nick') }}" required autocomplete="nick"
+                                   autofocus>
 
                             @error('nick')
                             <span class="invalid-feedback" role="alert">

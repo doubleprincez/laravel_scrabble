@@ -42,6 +42,23 @@ class JeuAPIController extends Controller
         }
     }
 
+    public function check_new_player()
+    {
+        // check if new players have been added dynamically to game list
+        if (request()->has('gameId')) {
+            // return list of game players and their details as well as the game type for checking
+            $game = $this->get_game_by_id((int)request()->get('gameId'));
+
+            // get all the players currently available in the game
+            $players = $this->get_list_of_players($game);
+
+            $counter = count($players);
+            // check if players are complete and game can proceed
+            $complete = $counter === (int)$game->partie->typePartie;
+            return ['players' => $players, 'count' => $counter, 'complete' => $complete];
+        }
+    }
+
     public function message()
     {
         $user_id = auth()->id();

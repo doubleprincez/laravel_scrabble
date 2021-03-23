@@ -36,9 +36,10 @@ class JoueurController extends Controller
     {
 
         // validate nick name
-        request()->validate([
+        $valid = request()->validate([
             'nick' => 'required|string|max:15|regex:/^[a-zA-Z0-9\s]+$/|unique:users'
         ]);
+
         $nick = request()->get('nick');
         //print_r($request->input());
         $joueur = User::find(auth()->id());
@@ -46,8 +47,9 @@ class JoueurController extends Controller
         $joueur->nick = $nick; // this will be the user nick name
 //        $joueur->photo = $request->photo->store('photo');
         $joueur->photo = $this->upload_image('photo');
-        $result = $joueur->save();
 
+        $result = $joueur->save();
+//        dd($result);
         if ($result) {
             $msg = ["Resultat" => "Data has been saved "];
 
@@ -55,6 +57,7 @@ class JoueurController extends Controller
             $msg = ["Resultat" => "Data has not been saved "];
 
         }
+
         return redirect()->route('game.select')->with($msg);
 
     }

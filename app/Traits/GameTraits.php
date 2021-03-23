@@ -139,13 +139,13 @@ trait GameTraits
             // check if letters are all in the chavolet
             if (!$user_chavolet->contains($letter)) $failed++;
         }
-        return $failed == 0;
+        return $failed === 0;
     }
 
 
     private function check_word_direction($game, $word)
     {
-        // use the game to get the board
+        // TODO use the game to get the board
         $width = [];
         $height = [];
 
@@ -240,6 +240,19 @@ trait GameTraits
         $game->$user_position = $user_id;
         return $this->get_user_chavolet($game, $user_id, $position);
 
+    }
+
+    private function get_list_of_players($game)
+    {
+        $players = array();
+        // since games have a limit of 4 players we will loop through
+        for ($i = 0; $i < 4; $i++) {
+            $check = 'player_' . $i;
+            if ($game->$check) {
+                $players[] = $game->$check;
+            }
+        }
+        return $players;
     }
 
     private function get_empty_position($game)
@@ -462,14 +475,15 @@ trait GameTraits
     private
     function upload_image($image_nom)
     {
-        request()->validate([$image_nom => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+        request()->validate([$image_nom => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048']);
+
         if (request()->$image_nom) {
             $set_nom = time() . '.' . request()->$image_nom->extension();
             $path = public_path('img/players');
             request()->$image_nom->move($path, $set_nom);
             return 'img/players/' . $set_nom;
-        } else {
-            return null;
         }
+            return null;
+
     }
 }

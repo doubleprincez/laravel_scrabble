@@ -65,5 +65,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // game timer function
 Route::post('game/check_timer',[JeuAPIController::class,'check_timer'])->name('game.checkTimer');
 
+// game new user added
+Route::post('game/check_new_player',[JeuAPIController::class,'check_new_player'])->name('game.checkNewPlayer');
+
 // handle message and chat
 Route::post('game/message',[JeuAPIController::class,'message'])->name('game.message');

@@ -93,7 +93,6 @@ class PartieController extends Controller
         // another game till the game ends.
         $check_previous_game = $this->check_previous_game($user_id);
 
-
         if ($check_previous_game != false) {
             // get load previous game
             $game = $check_previous_game;
