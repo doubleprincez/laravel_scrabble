@@ -21,6 +21,7 @@ class CreatePartieTable extends Migration
             $table->datetime('dateDebutPartie')->nullable();
             $table->datetime('dateFin')->nullable();
             $table->text('statutPartie')->nullable()->default('enAttente');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

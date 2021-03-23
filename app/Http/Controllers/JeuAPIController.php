@@ -24,11 +24,21 @@ class JeuAPIController extends Controller
             // check if current user is the one playing now or the time has changed.
             $update_time = $this->update_game_timer($game, $user_id);
             // TODO check for new messages and send along
+            $player_messages = $this->get_user_messages($game, $user_id);
 
             // TODO then send details of current stock for he game as it is reducing
-            $stock = $game->stock->remaining();
+            if ($game->stock) {
+                $stock = $game->stock->remaining();
+            } else {
+                $stock = 0;
+            }
 
-            return response()->json($update_time+['game'=>$game,'stock'=>$stock]);
+            return response()->json($update_time +
+                [
+                    'game' => $game,
+                    'stock' => $stock,
+                    'messages' => $player_messages
+                ]);
         }
     }
 

@@ -30,7 +30,7 @@ class LettresController extends Controller
 // user has used up his chavolet, so we need to update with new
             $position = $this->search_user_chavolet($game, $user_id);
 
-            if ($position == null) {
+            if ($position === null) {
                 // user might have entered a game id but was never part of the game
                 return redirect()->route('game.select');
             }
@@ -42,9 +42,9 @@ class LettresController extends Controller
             $game = $this->get_game_by_id((int)request()->get('game'));
             return view('jeu')->with(compact('game', 'valeur', 'position'));
 
-        } else {
-            return redirect()->route('game.ended')->with(['Resultat' => 'Game Ended']);
         }
+
+        return redirect()->route('game.ended')->with(['Resultat' => 'Game Ended']);
 
     }
 

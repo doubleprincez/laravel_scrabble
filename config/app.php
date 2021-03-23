@@ -123,6 +123,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'chat_limit'=> env('CHAT_LIMIT',6),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

@@ -30,6 +30,7 @@ class CreateGamesTable extends Migration
             $table->integer('current_player')->nullable()->default(1);
             $table->dateTime('start_time')->nullable()->default(now());
             $table->boolean('game_status')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

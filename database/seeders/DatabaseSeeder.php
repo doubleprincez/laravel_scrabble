@@ -13,10 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        $this->call(JoueurTableSeeder::class);
-        $this->call(LettreTableSeeder::class);
-        $this->call(ReserveTableSeeder::class);
-        $this->call(GameTableSeeder::class);
+//        $this->call(JoueurTableSeeder::class); // CREATE DEMO USERS FOR TEST PURPOSES
+        $this->call(LettreTableSeeder::class); // CREATE ALL LETTERS REQUIRED FOR EACH NEW GAME
+        $this->call(ReserveTableSeeder::class); // CREATE RESERVE FOR ALL GAME STOCK
+//        $this->call(GameTableSeeder::class); // CREATE DEMO GAMES
     }
 }

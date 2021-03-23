@@ -19,6 +19,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedBigInteger('game_id');
             $table->integer('position');
             $table->text('contenu');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

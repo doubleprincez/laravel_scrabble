@@ -238,8 +238,8 @@ trait GameTraits
     {
         $user_position = 'user_id_' . $position;
         $game->$user_position = $user_id;
-        $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
-        return $user_chavolet;
+        return $this->get_user_chavolet($game, $user_id, $position);
+
     }
 
     private function get_empty_position($game)
@@ -328,16 +328,15 @@ trait GameTraits
     {
         $user_chavolet = json_decode($this->get_user_pieces($game, $user_id));
 
-        if ($user_chavolet != null) {
+        if ($user_chavolet !== null) {
             $check_chavolet = $this->check_empty_array($user_chavolet);
-            if ($check_chavolet == null && $check_chavolet == []) {
+            if ($check_chavolet === null && $check_chavolet === []) {
                 return $this->generate_new_pieces($game->id, $position);
-            } else {
-                return $user_chavolet;
             }
-        } else {
-            return $this->generate_new_pieces($game->id, $position);
+            return $user_chavolet;
         }
+        return $this->generate_new_pieces($game->id, $position);
+
     }
 
     private function sum_stock_quantite(Game $model)
@@ -412,6 +411,13 @@ trait GameTraits
         }
         // return the stack
         return $stack;
+    }
+
+    private function get_user_messages($game, $user_id)
+    {
+        // creating a limit to the amount of messages that display on user chat screen
+        $limit = config('app.chat_limit');
+        return Message::where('game_id', $game->id)->where('user_id', $user_id)->paginate($limit);
     }
 
     private function get_user_pieces(Game $game, $user_id)
