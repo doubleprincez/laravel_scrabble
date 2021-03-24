@@ -84,6 +84,8 @@ trait GameTraits
                 $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $word);
 
                 if ($check_chavolet == true) {
+                    $score = $this->word_score($word);
+                    dd($score);
                     //TODO check if the direction of the word is ok
                     $c = $this->check_word_direction($game, $word, $direction);
 
@@ -144,6 +146,17 @@ trait GameTraits
         return $failed === 0;
     }
 
+    private function word_score($word)
+    {
+        $lettres = $this->get_letters();
+        $score = 0;
+
+        foreach ($a = str_split($word) as $letter) {
+            $val = $lettres->where('lettre', $letter)->first();
+            $score += $val->valeur;
+        }
+        return $score;
+    }
 
     private function check_word_direction($game, $word, $direction = 'v')
     {
@@ -175,6 +188,11 @@ trait GameTraits
 //        $data = curl_exec($curl);
 //        curl_close($curl);
         return json_decode(json_encode($data), true);
+    }
+
+    private function get_letters()
+    {
+        return Lettre::all();
     }
 
     private function check_previous_game($user_id)
