@@ -98,7 +98,7 @@ class PartieController extends Controller
             $game = $check_previous_game;
             // go to previous game
 // user has used up his chavolet, so we need to update with new
-            $position = $this->search_user_chavolet($game, $user_id);
+            $position = $this->user_chavolet_position($game, $user_id);
 
             // get if the player has no more playing piece left
             $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);

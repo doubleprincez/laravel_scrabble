@@ -48,26 +48,32 @@ trait GameTraits
         }
         // boolean to know if current user is the one to play
         $active = $game->current_player == $user_id;
+        $position = $this->user_chavolet_position($game, $user_id);
 
-        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active];
+        // get if the player has no more playing piece left
+        $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
+        $valeur = $this->generate_valeur($user_chavolet);
+        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur];
     }
 
     private function message_manager($game, $user_id, $message)
     {
         $new_chat = new Message();
         $alert = "error";
+        $msg = '';
         // get message !parser
-        $check_pattern = preg_match("/!placer/i", $message);
-
+        $check_pattern = preg_match("/ !placer/", $message);
         // if message does not contain command then upload as just chat
-        if ($check_pattern) {
+        if ($check_pattern !== 0) {
+
             // convert each letter to small letters
             $small = strtolower($message);
             $split = explode('!placer', $small);
             $placer = explode(' ', trim($split[1]));
             $position = $placer[0];
             $direction = substr($position, -1, 1); // e.g h/v horizontal/vertical
-            $matrix = substr($position, 0, -1); // e.g g15
+
+            $grid = substr($position, 0, -1); // e.g g15
             $word = $placer[1];
 
             // check if word is in dictionary
@@ -79,7 +85,7 @@ trait GameTraits
 
                 if ($check_chavolet == true) {
                     //TODO check if the direction of the word is ok
-                    $c = $this->check_word_direction($game, $word);
+                    $c = $this->check_word_direction($game, $word, $direction);
 
                     dd($c);
                     // TODO calculate the player's score
@@ -92,7 +98,7 @@ trait GameTraits
 //                    $game->board()->create([
 //                        'player_id' => $user_id,
 //                        'direction' => $direction,
-//                        'position' => $matrix,
+//                        'position' => $grid,
 //                        'word' => $word
 //                    ]);
                     // message
@@ -101,14 +107,10 @@ trait GameTraits
                 } else {
                     $msg = "Word is not in your Chavolet";
                 }
-
-
             } else {
                 // message
                 $msg = 'Word is not in dictionary';
-
             }
-
         }
         // save current play as player play details
         $new_chat->user_id = $user_id;
@@ -117,7 +119,7 @@ trait GameTraits
         $new_chat->position = 1;
 //        return $new_chat->save();
         // return mgs, alert, communication
-        dd('here');
+        dd($new_chat);
         return ['alert' => $alert, 'message' => $msg];
     }
 
@@ -128,7 +130,7 @@ trait GameTraits
 
     private function check_words_in_chavolet($game, $user_id, $word)
     {
-        $position = $this->search_user_chavolet($game, $user_id);
+        $position = $this->user_chavolet_position($game, $user_id);
 
         // get if the player has no more playing piece left
         $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
@@ -143,9 +145,9 @@ trait GameTraits
     }
 
 
-    private function check_word_direction($game, $word)
+    private function check_word_direction($game, $word, $direction = 'v')
     {
-        // TODO use the game to get the board
+        // TODO use the game board to check if the word will go off the board or will collide with other words
         $width = [];
         $height = [];
 
@@ -273,7 +275,7 @@ trait GameTraits
 
     private function get_user_game_position($game, int $user_id)
     {
-        return $this->search_user_chavolet($game, $user_id);
+        return $this->user_chavolet_position($game, $user_id);
     }
 
     private function create_game(int $user_id, int $type)
@@ -349,7 +351,6 @@ trait GameTraits
             return $user_chavolet;
         }
         return $this->generate_new_pieces($game->id, $position);
-
     }
 
     private function sum_stock_quantite(Game $model)
@@ -367,7 +368,7 @@ trait GameTraits
         $count = count($game_stock);
         // if values in the stock is less than 7, then use the stock current count else
         // use 7 because we are generating 7 items in user chavolet
-        $condition = $count < 7 ? $count : 7;
+        $condition = $count <= 7 ? $count : 7;
         // empty stack for holding new items we are about to pick from stock
         $stack = array();
         $parse = $game_stock;
@@ -384,9 +385,7 @@ trait GameTraits
                 $parse[$rand]->quantite--;
                 $game_stock[$rand]->save(['quantite' => $qty]);
             }
-
         }
-
         // pass values in the stack into user_chavolet
         $user_chavolet = 'user_' . $position . '_chavolet';
         $game = $this->get_game_by_id($game_id);
@@ -435,7 +434,7 @@ trait GameTraits
 
     private function get_user_pieces(Game $game, $user_id)
     {
-        $user_position = $this->search_user_chavolet($game, $user_id);
+        $user_position = $this->user_chavolet_position($game, $user_id);
 
         if ($user_position == 1) {
             return $game->user_1_chavolet;
@@ -450,7 +449,7 @@ trait GameTraits
     }
 
 
-    private function search_user_chavolet($game, int $user_id)
+    private function user_chavolet_position($game, int $user_id)
     {
         if ((int)$game->user_id_1 == $user_id) {
             return 1;
@@ -483,7 +482,7 @@ trait GameTraits
             request()->$image_nom->move($path, $set_nom);
             return 'img/players/' . $set_nom;
         }
-            return null;
+        return null;
 
     }
 }

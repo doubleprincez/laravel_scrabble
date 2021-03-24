@@ -14,13 +14,15 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/photoupload.css') }}"/>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
-    @if(config('app.env')=='local')
+    @if(config('app.env')==='local')
         <link rel="stylesheet" href="{{ asset('cs/all.min.css') }}" />
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/popper.min.js') }}"></script>
     @else
+
+        @dd('mad ooo')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

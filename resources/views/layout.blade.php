@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/photoupload.css') }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if(config('app.env')=='local')
+    @if(config('app.env')==='local')
         <link rel="stylesheet" href="{{ asset('css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
         <script rel="stylesheet" src="{{ asset('js/jquery-1.9.1.min.js') }}"></script>

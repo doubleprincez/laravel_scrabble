@@ -1,4 +1,4 @@
-<div class="flex-container">
+<div id="rack" class="flex-container">
     <!--  check if it is set -->
     @if(isset($valeur))
         @foreach($valeur as $i)

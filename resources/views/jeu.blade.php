@@ -4,18 +4,10 @@
 @section('styles')
     <!-- Boite de communication  -->
 
-    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="css/panneau.css"/>
-    <link rel="stylesheet" type="text/css" href="css/rack.css"/>
-    <link rel="stylesheet" type="text/css" href="css/jeu.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/panneau.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/rack.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jeu.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/boite-communication.css') }}"/>
-
-    <!-- Boite de communication  -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 
     <!-- Styles -->
     <link href="{{ asset('css/plateau.css') }}" rel="stylesheet" type="text/css">
@@ -126,9 +118,8 @@
             })
         });
 
-        setInterval(checkTime, 4000);
 
-        function checkTime() {
+        var checkTime = () => {
             var url = '{{ route('game.checkTimer') }}';
             // function to check if player time is still active
 
@@ -149,8 +140,80 @@
                     // create new timer on the player that is active
                     var timer = '<div class="counter">00:' + data.start_time + '</div>';
                     current.append(timer);
+                    userchavolets(data.game, data.my_chovalet);
                 }
             })
         }
+
+
+        var userchavolets = (game, current) => {
+            var p1, p2, p3, p4 = 0;
+            let p1Score, p2Score, p3Score, p4Score = '';
+            // user score
+            if (game.user_id_1 != null) {
+                p1 = game.user_1_chavolet;
+                p1Score = game.user_1_score;
+
+                $('#player1').children('div.score').html('<b>score:</b>' + p1Score + ' | <b>nb lettres dans le chavolet:</b>' + p1);
+
+            }
+            if (game.user_id_2 != null) {
+                p2 = game.user_2_chavolet;
+                p2Score = game.user_2_score;
+                $('#player2').children('div.score').html('<b>score:</b>' + p2Score + ' | <b>nb lettres dans le chavolet:</b>' + p2);
+            }
+            if (game.user_id_3 != null) {
+                p3 = game.user_3_chavolet;
+                p3Score = game.user_3_score;
+                $('#player3').children('div.score').html('<b>score:</b>' + p3Score + ' | <b>nb lettres dans le chavolet:</b>' + p3);
+            }
+            if (game.user_id_4 != null) {
+                p4 = game.user_4_chavolet;
+                p4Score = game.user_4_score;
+                $('#player4').children('div.score').html('<b>score:</b>' + p4Score + ' | <b>nb lettres dans le chavolet:</b>' + p4);
+            }
+
+            // current user chavolet
+            var arr = [];
+            for (var i = 0; i < current.length; i++) {
+                if (current[i] != null && current[i] !== "") {
+                    arr[i] = '<div class="flex-item selected"><div class="top-left">' + current[i].lettre + '<sub class="number">' + current[i].valeur + '</sub></div></div>';
+                } else {
+                    arr[i] = '<div class="flex-item selected"><div class="top-left"></div></div>';
+                }
+            }
+
+            $('#rack').html(arr);
+            
+        }
+        var fetchMessages = (messages) => {
+
+            /**
+             * if
+             *   <li class="right clearfix"><span class="chat-img pull-right">
+             else
+             <li class="left clearfix"><span class="chat-img pull-left">
+             endif
+             <img width="40" height="40" src="{ asset($msg->post_by->photo) }"
+             alt="{ $msg->post_by->nick } Avatar"
+             class="img-circle"/>
+
+             </span>
+             <div class="chat-body clearfix">
+             <div class="header     if($msg->post_by->id == auth()->id()) text-right endif">
+             <strong class="primary-font">{ $msg->post_by->nick }</strong> <small
+             class="pull-right text-muted">
+             <span class="glyphicon glyphicon-time"></span>{  $msg->post_by->created_at->shortRelativeToNowDiffForHumans() }
+             </small>
+             </div>
+             <p>
+             { $msg->contenu }
+             </p>
+             </div>
+             </li>
+
+             */
+        }
+        setInterval(checkTime, 4000);
     </script>
 @endsection

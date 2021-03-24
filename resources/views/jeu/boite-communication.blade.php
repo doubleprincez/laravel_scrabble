@@ -38,7 +38,6 @@
                             </div>
                         </li>
                         @if($game->messages)
-
                             @foreach($game->messages->take(6) as $msg)
                                 @if($msg->post_by->id == auth()->id())
                                     <li class="right clearfix"><span class="chat-img pull-right">

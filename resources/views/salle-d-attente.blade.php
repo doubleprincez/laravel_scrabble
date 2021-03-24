@@ -162,7 +162,7 @@
                             $('#players').html(players);
                         }
                         if (data.complete === true || data.complete === 'true') {
-                            var btn = '<li class="flex-item my-3 " style="position:absolute;bottom:0"><button id="continueBtn" class="btn btn-success" onclick="window.location.href=' + jeuUrl + '" > Proceed To Game </button> </li>';
+                            var btn = '<li class="flex-item my-3 " style="position:absolute;bottom:0"><button id="continueBtn" class="btn btn-success" onclick="window.location.href=\'' + jeuUrl + '\'" > Proceed To Game </button> </li>';
                             $('#spinner').hide();
                             $('#players').append(btn);
                         } else {

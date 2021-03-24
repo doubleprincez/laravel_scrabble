@@ -4,6 +4,7 @@ use App\Http\Controllers\JeuAPIController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoueurController;
 use App\Http\Controllers\LettresController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PartieController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -69,4 +70,4 @@ Route::post('game/check_timer',[JeuAPIController::class,'check_timer'])->name('g
 Route::post('game/check_new_player',[JeuAPIController::class,'check_new_player'])->name('game.checkNewPlayer');
 
 // handle message and chat
-Route::post('game/message',[JeuAPIController::class,'message'])->name('game.message');
+Route::post('game/message',[MessageController::class,'index'])->name('game.message');

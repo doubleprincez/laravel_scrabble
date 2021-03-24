@@ -22,7 +22,7 @@ class JoueurController extends Controller
      */
     public function index()
     {
-        dd('here');
+        dd('joueu index');
         $joueur = Joueur::all()->toArray(); /* toArray methode will convert to array format to stored in $joueur variable */
         return view('index', compact('joueur')); /* this compact function will create  an array from  $joueur which we can access in index file folder  */
     }
@@ -49,7 +49,7 @@ class JoueurController extends Controller
         $joueur->photo = $this->upload_image('photo');
 
         $result = $joueur->save();
-//        dd($result);
+
         if ($result) {
             $msg = ["Resultat" => "Data has been saved "];
 
