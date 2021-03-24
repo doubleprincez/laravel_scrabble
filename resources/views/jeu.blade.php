@@ -78,7 +78,8 @@
     </div>
         <div style="border-radius:0.6vmin; padding:0.2vmin 1.5vmin; font-size:calc(8px + 1vmin); background:#7a1204; margin-top:1vmin; color:#fff; cursor:pointer;" class="endTurn">Quitter</div>
     </div>  -->
-
+    <audio id="turn" src="{{ asset('wav/bell.wav') }}" preload="auto"></audio>
+    <audio id="send" src="{{ asset('wav/send.mp3') }}" preload="auto"></audio>
 @endsection
 
 @section('scripts')
@@ -90,6 +91,12 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        var turnCount = 0;
+        var turnSound = document.getElementById('turn');
+        var sendSound = document.getElementById('send');
+        turnSound.loop = false;
+        sendSound.loop = false;
+
         $(document).ready(function () {
             document.getElementById('btn-chat').addEventListener('click', function () {
                 var input = $('#btn-input').val();
@@ -100,6 +107,7 @@
 
                 // only when there is input will it send
                 if (input) {
+                    sendSound.play();
                     // first check if word exists in the dictionary
 
                     $.ajax({
@@ -129,8 +137,13 @@
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
                 success: function (data) {
                     if (data.active === true || data.active === 'true') {
-                        // notify current user of turn
-
+                        if (turnCount === 0) {
+                            // notify current user of turn
+                            turnSound.play();
+                            turnCount++;
+                        }
+                    } else {
+                        turnCount = 0;
                     }
                     var current = $('#player' + data.current_player);
                     // remove any counter time
@@ -184,7 +197,7 @@
             }
 
             $('#rack').html(arr);
-            
+
         }
         var fetchMessages = (messages) => {
 
