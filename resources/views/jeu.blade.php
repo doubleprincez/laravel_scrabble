@@ -126,7 +126,6 @@
             })
         });
 
-
         var checkTime = () => {
             var url = '{{ route('game.checkTimer') }}';
             // function to check if player time is still active
@@ -154,10 +153,10 @@
                     var timer = '<div class="counter">00:' + data.start_time + '</div>';
                     current.append(timer);
                     userchavolets(data.game, data.my_chovalet);
+                    fetchMessages(data.messages);
                 }
             })
         }
-
 
         var userchavolets = (game, current) => {
             var p1, p2, p3, p4 = 0;
@@ -200,8 +199,28 @@
 
         }
         var fetchMessages = (messages) => {
+            <?php
+             $time = date('H'); if ($time < "12"){  $g = "Bonjour!";} elseif ($time >= "12" && $time < "17") {  $g = "Bon apres-midi!"; } else { $g = "Bon Sour!";} ?>
+
+            var g = '{{ $g }}';
+            var chats = '<li class="left clearfix"><span class="chat-img pull-left"><img width="40" height="40" src="{{ asset('img/scrabblelogo.png') }}" alt="User Avatar" class="img-circle"/> </span> <div class="chat-body text clearfix"> <div class="header"> <strong class="primary-font">!Aide</strong> </div> <div class="text"> <p>' + g + ' Afin de pouvoir effectuer les tâches ci-dessous, vous pouvez utiliser  ces 5 commandes:<br>  <b>1. Placer un mot:</b> !placer ligne colonne (h|v) mot<br> <b>2. Changer une lettre:</b> !changer lettre<br>  <b>3. Passer le tour à un autre joueur:</b> !passer<br> <b>4. Afficher le menu d\'aide:</b> !aide<br> <b>5. Quitter menu d\'aide:</b> !quitter<br> </p> </div> </div> </li>';
+            for (var i = 0; i < messages.length; i++) {
+                var position = messages[i].position === true ? '<li class="right clearfix"><span class="chat-img pull-right">' : '<li class="left clearfix"><span class="chat-img pull-left">';
+                var right = messages[i].position === true ? 'text-right' : '';
+                chats += position + '<img width="40" height="40" src="' + messages[i].image + '" alt="' + messages[i].user_name + ' Avatar" class="img-circle"/></span> <div class="chat-body clearfix"> <div class="header ' + right + '"> <strong class="primary-font">' + messages[i].user_name + '</strong> <small class="pull-right text-muted"> <span class="glyphicon glyphicon-time"></span>' + messages[i].created_at + '</small> </div> <p> ' + messages[i].contenu + ' </p> </div>';
+
+            }
+
+            $('#chat').html(chats);
 
             /**
+             * contenu: "this is   test m essage that i want to you in accessing something"
+             created_at: "31 minutes ago"
+             image: "img/players/1616501519.jpg"
+             position: true
+             user_id: 1
+             user_name: "user1616501439"
+
              * if
              *   <li class="right clearfix"><span class="chat-img pull-right">
              else
@@ -209,9 +228,7 @@
              endif
              <img width="40" height="40" src="{ asset($msg->post_by->photo) }"
              alt="{ $msg->post_by->nick } Avatar"
-             class="img-circle"/>
-
-             </span>
+             class="img-circle"/></span>
              <div class="chat-body clearfix">
              <div class="header     if($msg->post_by->id == auth()->id()) text-right endif">
              <strong class="primary-font">{ $msg->post_by->nick }</strong> <small

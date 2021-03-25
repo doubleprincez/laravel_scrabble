@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\GameTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Game extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, GameTraits;
 
     protected $guarded = [];
 
@@ -44,7 +45,7 @@ class Game extends Model
 
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'game_id', 'id');
     }
 
     public function board()
@@ -59,10 +60,10 @@ class Game extends Model
             'user_id_3' => $this->user_id_3,
             'user_id_4' => $this->user_id_4,
             'reserve' => $this->reserve,
-            'user_1_chavolet' => $this->user_1_chavolet ? count(json_decode($this->user_1_chavolet, true)) : 0,
-            'user_2_chavolet' => $this->user_2_chavolet ? count(json_decode($this->user_2_chavolet, true)) : 0,
-            'user_3_chavolet' => $this->user_3_chavolet ? count(json_decode($this->user_3_chavolet, true)) : 0,
-            'user_4_chavolet' => $this->user_4_chavolet ? count(json_decode($this->user_4_chavolet, true)) : 0,
+            'user_1_chavolet' => $this->user_1_chavolet ? count($this->check_empty_array(json_decode($this->user_1_chavolet, true))) : 0,
+            'user_2_chavolet' => $this->user_2_chavolet ? count($this->check_empty_array(json_decode($this->user_2_chavolet, true))) : 0,
+            'user_3_chavolet' => $this->user_3_chavolet ? count($this->check_empty_array(json_decode($this->user_3_chavolet, true))) : 0,
+            'user_4_chavolet' => $this->user_4_chavolet ? count($this->check_empty_array(json_decode($this->user_4_chavolet, true))) : 0,
             'user_1_score' => $this->user_1_score,
             'user_2_score' => $this->user_2_score,
             'user_3_score' => $this->user_3_score,

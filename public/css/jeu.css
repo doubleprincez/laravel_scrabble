@@ -1,75 +1,84 @@
 
+.right, .pull-right {
+    float: right;
+}
 
-	div.panneau-inf{  
-		position: absolute;
-		top: 28px;
-		right: 780px;  
-		width: 500px;
-		height: 238px;
-		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;	
-		}
+.left, .pull-left {
+    float: left;
+}
 
-	div.board_box{
-		position: absolute;
-		top: 28px;
-		right: 138px;  
-		width: 590px;
-		height: 603px;
-		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;	
-	}
-	div.btcom{  
-			position: absolute;
-			top: 284px;	
-			right: 780px;  
-		width: 500px;
-		height: 290px;
-			background-color: rgb(240, 240, 248);
-			text-indent: 22px;
-			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-			box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;	
-	}
-	div.logo{  
-		position: absolute;
-		top: 28px;	
-		right: 1160px;  
-		width: 158px;	
-		height: 70px;
-		}
+div.panneau-inf {
+    position: absolute;
+    top: 28px;
+    right: 780px;
+    width: 500px;
+    height: 238px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+div.board_box {
+    position: absolute;
+    top: 28px;
+    right: 138px;
+    width: 590px;
+    height: 603px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+div.btcom {
+    position: absolute;
+    top: 284px;
+    right: 780px;
+    width: 500px;
+    height: 290px;
+    background-color: rgb(240, 240, 248);
+    text-indent: 22px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+div.logo {
+    position: absolute;
+    top: 28px;
+    right: 1160px;
+    width: 158px;
+    height: 70px;
+}
 
 
-	div.a{  
-		position: absolute;
-		top: 670px;	
-		right: 780px;  
-		width: 500px;
-		height: 238px;
-		background-color: transparent;
-        text-indent: 22px;
-		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;		
-        }
+div.a {
+    position: absolute;
+    top: 670px;
+    right: 780px;
+    width: 500px;
+    height: 238px;
+    background-color: transparent;
+    text-indent: 22px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
 
-		
-	div.rack-div{  
-		position: absolute;
-		top: 586px;	
-		right: 780px;  
-		width: 312px;
-		height: 43px;
-		background-color: transparent;
-		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;	
 
-		}
+div.rack-div {
+    position: absolute;
+    top: 586px;
+    right: 780px;
+    width: 312px;
+    height: 43px;
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 
-	div.reserve{  
-			position: absolute;
-			top: 586px;	
-			right: 1100px;  
-			width: 180px;
-			height: 43px;
-			background-color: rgba(232, 232, 235, 0.986);
-			box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;	
-			padding-left: 4px;
-			text-align:center;
-			}
+}
+
+div.reserve {
+    position: absolute;
+    top: 586px;
+    right: 1100px;
+    width: 180px;
+    height: 43px;
+    background-color: rgba(232, 232, 235, 0.986);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    padding-left: 4px;
+    text-align: center;
+}
 	
 			

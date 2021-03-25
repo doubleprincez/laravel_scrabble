@@ -53,7 +53,7 @@ trait GameTraits
         // get if the player has no more playing piece left
         $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
         $valeur = $this->generate_valeur($user_chavolet);
-        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur];
+        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur,'messages'=>$game->messages->map->format()];
     }
 
     private function message_manager($game, $user_id, $message)
@@ -119,7 +119,7 @@ trait GameTraits
         $new_chat->game_id = $game->id;
         $new_chat->contenu = $message;
         $new_chat->position = 1;
-//        return $new_chat->save();
+      $new_chat->save();
         // return mgs, alert, communication
         dd($new_chat);
         return ['alert' => $alert, 'message' => $msg];
