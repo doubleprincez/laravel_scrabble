@@ -68,9 +68,9 @@ class JeuAPIController extends Controller
             $game_id = request()->get('gameId');
             $game = $this->get_game_by_id($game_id);
             // skip player turn
-            $this->pass_user_turn($game, $user_id);
+            $msg = $this->pass_user_turn($game, $user_id);
             $alert = 'success';
-            $msg = 'Turn Skipped';
+            
         } else {
             $msg = 'unable to select game';
         }

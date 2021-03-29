@@ -176,6 +176,9 @@ trait GameTraits
             }
             $game->current_player = $current_player;
             $game->save();
+            return 'Turn Skipped';
+        }else{
+            return 'Not your Turn';
         }
 
 
