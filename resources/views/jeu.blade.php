@@ -271,7 +271,7 @@
                 }
             }
         }
-        // setInterval(checkTime, 4000);
+        setInterval(checkTime, 4000);
     </script>
 
 @endsection
