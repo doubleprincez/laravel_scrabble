@@ -16,10 +16,12 @@ class CreateBoardsTable extends Migration
         Schema::create('boards', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('game_id');
-            $table->unsignedBigInteger('player_id');
-            $table->enum('direction', ['h', 'v'])->nullable()->default('h');
-            $table->string('position');
-            $table->string('word')->nullable();
+            $table->longText('type')->nullable();
+            $table->boolean('tileLocked')->nullable();
+            $table->longText('owner')->nullable();
+            $table->longText('tile')->nullable();
+            $table->string('x')->nullable();
+            $table->string('y')->nullable();
             $table->timestamps();
         });
     }

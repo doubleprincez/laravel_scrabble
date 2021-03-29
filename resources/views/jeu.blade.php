@@ -109,7 +109,7 @@
                 if (input) {
                     sendSound.play();
                     // first check if word exists in the dictionary
-
+                    $('#btn-input').val('');
                     $.ajax({
                         url: url,
                         type: 'post',
@@ -120,6 +120,9 @@
                                 // TODO append new chat message to array of chatBox
 
                             }
+                        },
+                        error: function (err) {
+                            $('#btn-input').val(input);
                         }
                     });
                 }
@@ -199,8 +202,14 @@
 
         }
         var fetchMessages = (messages) => {
-            <?php
-             $time = date('H'); if ($time < "12"){  $g = "Bonjour!";} elseif ($time >= "12" && $time < "17") {  $g = "Bon apres-midi!"; } else { $g = "Bon Sour!";} ?>
+                <?php
+                $time = date('H'); if ($time < "12") {
+                    $g = "Bonjour!";
+                } elseif ($time >= "12" && $time < "17") {
+                    $g = "Bon apres-midi!";
+                } else {
+                    $g = "Bon Sour!";
+                } ?>
 
             var g = '{{ $g }}';
             var chats = '<li class="left clearfix"><span class="chat-img pull-left"><img width="40" height="40" src="{{ asset('img/scrabblelogo.png') }}" alt="User Avatar" class="img-circle"/> </span> <div class="chat-body text clearfix"> <div class="header"> <strong class="primary-font">!Aide</strong> </div> <div class="text"> <p>' + g + ' Afin de pouvoir effectuer les tâches ci-dessous, vous pouvez utiliser  ces 5 commandes:<br>  <b>1. Placer un mot:</b> !placer ligne colonne (h|v) mot<br> <b>2. Changer une lettre:</b> !changer lettre<br>  <b>3. Passer le tour à un autre joueur:</b> !passer<br> <b>4. Afficher le menu d\'aide:</b> !aide<br> <b>5. Quitter menu d\'aide:</b> !quitter<br> </p> </div> </div> </li>';
@@ -213,37 +222,8 @@
 
             $('#chat').html(chats);
 
-            /**
-             * contenu: "this is   test m essage that i want to you in accessing something"
-             created_at: "31 minutes ago"
-             image: "img/players/1616501519.jpg"
-             position: true
-             user_id: 1
-             user_name: "user1616501439"
-
-             * if
-             *   <li class="right clearfix"><span class="chat-img pull-right">
-             else
-             <li class="left clearfix"><span class="chat-img pull-left">
-             endif
-             <img width="40" height="40" src="{ asset($msg->post_by->photo) }"
-             alt="{ $msg->post_by->nick } Avatar"
-             class="img-circle"/></span>
-             <div class="chat-body clearfix">
-             <div class="header     if($msg->post_by->id == auth()->id()) text-right endif">
-             <strong class="primary-font">{ $msg->post_by->nick }</strong> <small
-             class="pull-right text-muted">
-             <span class="glyphicon glyphicon-time"></span>{  $msg->post_by->created_at->shortRelativeToNowDiffForHumans() }
-             </small>
-             </div>
-             <p>
-             { $msg->contenu }
-             </p>
-             </div>
-             </li>
-
-             */
         }
         setInterval(checkTime, 4000);
     </script>
+
 @endsection

@@ -14,6 +14,7 @@ use Carbon\Carbon;
 
 trait GameTraits
 {
+    use BoardTraits;
 
     private function get_game_by_id($game_id)
     {
@@ -53,7 +54,7 @@ trait GameTraits
         // get if the player has no more playing piece left
         $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
         $valeur = $this->generate_valeur($user_chavolet);
-        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur,'messages'=>$game->messages->map->format()];
+        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur, 'messages' => $game->messages->map->format()];
     }
 
     private function message_manager($game, $user_id, $message)
@@ -71,11 +72,25 @@ trait GameTraits
             $split = explode('!placer', $small);
             $placer = explode(' ', trim($split[1]));
             $position = $placer[0];
-            $direction = substr($position, -1, 1); // e.g h/v horizontal/vertical
+            $direction = strtolower(substr($position, -1, 1)); // e.g h/v horizontal/vertical
 
             $grid = substr($position, 0, -1); // e.g g15
-            $word = $placer[1];
+            $word = strtolower(trim($placer[1]));
 
+            $board = $this->load_server_board($game);
+            // check if word touches other word in table
+//            return $this->check_touching_old($word, $direction, $grid, $board);
+
+            // returns 'stored','occupied','invalid'
+            $placed = $this->place_user_words('badge', 'v', 'h8', $board);
+
+            if (!is_object($placed)) {
+                return $placed; // display error
+            }
+            // calculate player move
+            $touch = $this->calculate_move($board->squares);
+
+            dd($touch);
             // check if word is in dictionary
             $in_dictionary = $this->check_dic($word);
 
@@ -119,9 +134,9 @@ trait GameTraits
         $new_chat->game_id = $game->id;
         $new_chat->contenu = $message;
         $new_chat->position = 1;
-      $new_chat->save();
+//      $new_chat->save();
         // return mgs, alert, communication
-        dd($new_chat);
+
         return ['alert' => $alert, 'message' => $msg];
     }
 
@@ -160,10 +175,6 @@ trait GameTraits
 
     private function check_word_direction($game, $word, $direction = 'v')
     {
-        // TODO use the game board to check if the word will go off the board or will collide with other words
-        $width = [];
-        $height = [];
-
 
     }
 
