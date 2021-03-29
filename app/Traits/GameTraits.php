@@ -54,7 +54,7 @@ trait GameTraits
         // get if the player has no more playing piece left
         $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
         $valeur = $this->generate_valeur($user_chavolet);
-        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur, 'messages' => $game->messages->map->format()];
+        return ['start_time' => $now->diff($start_time)->s, 'current_player' => $game->current_player, 'active' => $active, 'game' => $game->formatInformation(), 'my_chovalet' => $valeur, 'messages' => $game->messages->map->format(),];
     }
 
     private function message_manager($game, $user_id, $message)
@@ -177,7 +177,7 @@ trait GameTraits
             $game->current_player = $current_player;
             $game->save();
             return 'Turn Skipped';
-        }else{
+        } else {
             return 'Not your Turn';
         }
 
@@ -585,5 +585,20 @@ trait GameTraits
         }
         return null;
 
+    }
+
+    private function remove_recursion(&$object, &$stack = array())
+    {
+        if ((is_object($object)) || (is_array($object) && $object)) {
+            if (!in_array($object, $stack, true)) {
+                $stack[] = $object;
+                foreach ($object as &$subobject) {
+                    self::remove_recursion($subobject, $stack);
+                }
+            } else {
+                $object = '';
+            }
+        }
+        return $object;
     }
 }

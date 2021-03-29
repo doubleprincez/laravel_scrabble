@@ -163,6 +163,7 @@
                     current.append(timer);
                     userchavolets(data.game, data.my_chovalet);
                     fetchMessages(data.messages);
+                    plotBoard(data.board);
                 }
             })
         }
@@ -251,8 +252,25 @@
             $('#chat').html(chats);
 
         }
-
-        setInterval(checkTime, 4000);
+        var plotBoard = (data) => {
+            var setPiece, children, parent, addSpan;
+            for (var j = 0; j < data.length; j++) {
+                for (var i = 0; i < data.length; i++) {
+                    parent = $('#sq-' + (data[i][j].x + 1) + '-' + (data[i][j].y + 1));
+                    children = parent.children();
+                    if (data[i][j].tile) {
+                        setPiece = '<div class="flex-item"><div class="">' + data[i][j].tile.letter + '<sub class="number">' + data[i][j].tile.score + '</sub></div>';
+                        if (parent.find('span').length) {
+                            parent.find('span').html(setPiece);
+                        } else {
+                            addSpan = '<span>' + setPiece + '</span>';
+                            parent.append(addSpan);
+                        }
+                    }
+                }
+            }
+        }
+        // setInterval(checkTime, 4000);
     </script>
 
 @endsection

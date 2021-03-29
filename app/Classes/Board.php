@@ -88,7 +88,7 @@ class Board
         $positions = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
         foreach ($positions as $i => $iValue) {
             if ($letter == $iValue) {
-                return $i+1;
+                return $i + 1;
                 break;
             }
         }
@@ -128,6 +128,10 @@ class Board
         return "Board " . $this->Dimension . " x " . $this->Dimension;
     }
 
+    public function toArray()
+    {
+        return ['squares' => (array)$this->squares];
+    }
 
 
 }

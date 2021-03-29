@@ -33,12 +33,16 @@ class JeuAPIController extends Controller
                 $stock = 0;
             }
 
-            return response()->json($update_time +
+
+            $board = $this->load_server_board($game)->squares;
+            $selected = $this->remove_recursion($board);
+            return $update_time +
                 [
                     'game' => $game,
                     'stock' => $stock,
-                    'messages' => $player_messages
-                ]);
+                    'messages' => $player_messages,
+                    'board' => $selected
+                ];
         }
     }
 
@@ -70,7 +74,7 @@ class JeuAPIController extends Controller
             // skip player turn
             $msg = $this->pass_user_turn($game, $user_id);
             $alert = 'success';
-            
+
         } else {
             $msg = 'unable to select game';
         }
