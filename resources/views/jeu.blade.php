@@ -259,13 +259,14 @@
                     parent = $('#sq-' + (data[i][j].x + 1) + '-' + (data[i][j].y + 1));
                     children = parent.children();
                     if (data[i][j].tile) {
-                        setPiece = '<div class="flex-item"><div class="">' + data[i][j].tile.letter + '<sub class="number">' + data[i][j].tile.score + '</sub></div>';
-                        if (parent.find('span').length) {
-                            parent.find('span').html(setPiece);
-                        } else {
-                            addSpan = '<span>' + setPiece + '</span>';
-                            parent.append(addSpan);
-                        }
+                        setPiece = '<div class="flex-item">' + data[i][j].tile.letter + '<sub class="number">' + data[i][j].tile.score + '</sub>';
+                        parent.html(setPiece);
+                        // if (parent.find('span').length) {
+                        //     parent.find('span').html(setPiece);
+                        // } else {
+                        //     addSpan = '<span>' + setPiece + '</span>';
+                        //     parent.append(addSpan);
+                        // }
                     }
                 }
             }
