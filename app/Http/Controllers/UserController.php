@@ -15,10 +15,4 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    public function test()
-    {
-        $v =  $this->message_manager(1, 1, 'this is a test message !placer b15v badge');
-
-        dd($v);
-    }
 }

@@ -26,12 +26,18 @@
         @include('jeu.rack')
     </div>
 
-    <!-- <div class="logo">
-	<img src="{{ asset('img/scrabble.png') }}" class="logo" width="90" height="40">
-</div> -->
+    <div class="logo" style="z-index: 10">
+        <img src="{{ asset('img/scrabble.png') }}" class="logo" width="90" height="40">
+    </div>
 
     <div class="reserve">
         <h6><b>Nb lettres dans la reserve:</b><span id="stock">{{ $game->stock->remaining() }}</span></h6>
+        <div class="container-fluid" style="z-index: 5;position: absolute">
+            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">Skip &gt;&gt;</button>
+            <button class="btn btn-sm btn-outline-secondary" title="refill new pieces" onclick="reloadPieces()"> reload
+                <i
+                        class="fa fa-recycle"></i></button>
+        </div>
     </div>
     <div class="btcom">
         @include('jeu.boite-communication')
@@ -201,6 +207,28 @@
             $('#rack').html(arr);
 
         }
+        var skipTurn = () => {
+            var url = '{{ route('game.skip') }}';
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        var reloadPieces = () => {
+            var url = '{{ route('game.reload') }}';
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
+                success: function (data) {
+                    console.log(data)
+                }
+            });
+        }
         var fetchMessages = (messages) => {
                 <?php
                 $time = date('H'); if ($time < "12") {
@@ -223,6 +251,7 @@
             $('#chat').html(chats);
 
         }
+
         setInterval(checkTime, 4000);
     </script>
 

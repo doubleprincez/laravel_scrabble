@@ -72,4 +72,9 @@ Route::post('game/check_new_player', [JeuAPIController::class, 'check_new_player
 // handle message and chat
 Route::post('game/message', [MessageController::class, 'index'])->name('game.message');
 
-Route::get('test', [\App\Http\Controllers\UserController::class, 'test'])->name('game.test');
+// skip user turn
+Route::post('game/skip',[JeuAPIController::class,'skip_turn'])->name('game.skip');
+
+// reload new pieces
+
+Route::post('game/reload',[JeuAPIController::class,'reload_pieces'])->name('game.reload');

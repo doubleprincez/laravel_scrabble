@@ -408,7 +408,7 @@ trait GameTraits
     {
         // To generate piece, we need the game stock, so we are sure the values are available
         // first get all values that are not 0
-        $game_stock = Stock::where('game_id', $game_id)->where('quantite', '!=', 0)->get();
+        $game_stock = $this->get_game_stocks($game_id);
 
         // now get the count of those number and use it to select value on random
         $count = count($game_stock);
@@ -441,6 +441,31 @@ trait GameTraits
         return $stack;
     }
 
+    private function get_one_random_piece($game)
+    {
+        $game_stock = $this->get_game_stocks($game->id);
+        $parse = $game_stock;
+        // count
+        $counter = count($game_stock);
+        $rand = random_int(1, $counter - 1);
+
+        if ($counter < 1) {
+            return null;
+        }
+
+        $removed_letter = $parse[$rand];
+        $parse[$rand]->quantite--;
+
+        $this->store_stock($parse[$rand]->id, $game->id, $parse[$rand]);
+
+        return $removed_letter->lettre;
+    }
+
+    private function store_stock($stock_id, $game_id, $values)
+    {
+        return Stock::where('id', $stock_id)->where('game_id', $game_id)->update(['quantite' => $values->quantite]);
+    }
+
     private function generate_valeur($user_chavolet)
     {
 
@@ -471,6 +496,11 @@ trait GameTraits
         return $stack;
     }
 
+    private function get_game_stocks($game_id)
+    {
+        return Stock::where('game_id', $game_id)->where('quantite', '!=', 0)->get();
+    }
+
     private function get_user_messages($game, $user_id)
     {
         // creating a limit to the amount of messages that display on user chat screen
@@ -494,6 +524,28 @@ trait GameTraits
             return null;
     }
 
+    private function reload_user_chavolet($game, $user_id)
+    {
+        $position = $this->get_user_game_position($game, $user_id);
+        $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
+        // for items in user chavolet, those that are empty, generate new letters for them
+
+        $collected = collect($user_chavolet);
+
+        $generated = $collected;
+        foreach ($collected as $k => $item) {
+
+            if ($item == '') {
+                // empty piece, add new one
+                $p = $this->get_one_random_piece($game);
+                if ($p == null) {
+                    break;
+                }
+                $generated[$k] = $p;
+            }
+        }
+        return $generated;
+    }
 
     private function user_chavolet_position($game, int $user_id)
     {
