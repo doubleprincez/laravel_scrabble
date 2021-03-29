@@ -9,14 +9,17 @@ use Illuminate\Database\Eloquent\Model;
  * Class Board
  * @package App\Models
  * @property integer game_id
- * @property integer player_id
- * @property string direction
- * @property mixed position
- * @property  mixed word
+ * @property integer user_id
+ * @property mixed words
+ * @property mixed score
+ * @property mixed allTilesBonus
+ * @property mixed tilesPlaced
  */
 class Board extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
 
     public function game()
     {

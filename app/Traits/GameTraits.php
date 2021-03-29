@@ -71,53 +71,47 @@ trait GameTraits
             $small = strtolower($message);
             $split = explode('!placer', $small);
             $placer = explode(' ', trim($split[1]));
-            $position = $placer[0];
-            $direction = strtolower(substr($position, -1, 1)); // e.g h/v horizontal/vertical
+            $piece_position = $placer[0];
+            $direction = strtolower(substr($piece_position, -1, 1)); // e.g h/v horizontal/vertical
 
-            $grid = substr($position, 0, -1); // e.g g15
-            $word = strtolower(trim($placer[1]));
+            $grid = substr($piece_position, 0, -1); // e.g g15
 
-            $board = $this->load_server_board($game);
-            // check if word touches other word in table
-//            return $this->check_touching_old($word, $direction, $grid, $board);
+            $words = strtolower(trim($placer[1]));
 
-            // returns 'stored','occupied','invalid'
-            $placed = $this->place_user_words('badge', 'v', 'h8', $board);
-
-            if (!is_object($placed)) {
-                return $placed; // display error
-            }
-            // calculate player move
-            $touch = $this->calculate_move($board->squares);
-
-            dd($touch);
             // check if word is in dictionary
-            $in_dictionary = $this->check_dic($word);
-
+            $in_dictionary = $this->check_dic($words);
             if ($in_dictionary == true) {
                 // check if the words are in player chavolet
-                $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $word);
+                $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $words);
 
                 if ($check_chavolet == true) {
-                    $score = $this->word_score($word);
-                    dd($score);
-                    //TODO check if the direction of the word is ok
-                    $c = $this->check_word_direction($game, $word, $direction);
 
-                    dd($c);
-                    // TODO calculate the player's score
-                    $this->calculate_player_score($game, $user_id, $word);
+                    $board = $this->load_server_board($game);
 
-                    // TODO remove player chavolet for the word
-                    $this->remove_words_from_player_chavolet($game, $user_id, $word);
+                    // returns board object or errors,'occupied','invalid'
+                    $placed = $this->place_user_words($words, $direction, $grid, $board);
 
-                    // TODO save game to board
-//                    $game->board()->create([
-//                        'player_id' => $user_id,
-//                        'direction' => $direction,
-//                        'position' => $grid,
-//                        'word' => $word
-//                    ]);
+                    if (!is_object($placed)) {
+                        $msg = $placed; // display error
+                        goto rr;
+                    }
+                    // calculate player move
+                    $touch = $this->calculate_move($board->squares, $direction);
+
+                    if ($touch->error != null) {
+                        $msg = $touch;
+                        goto rr;
+                    }
+                    // get player position
+                    $user_position = $this->get_user_game_position($game, $user_id);
+                    // TODO store player scores
+                    $this->store_user_score($game, $user_id, $user_position);
+                    //  save player game to board
+                    $this->save_board_to_server($game, $touch->move);
+
+                    // remove player chavolet for the word
+                    $this->remove_words_from_player_chavolet($game, $user_id, $words, $user_position);
+
                     // message
                     $msg = "Word played successfully";
                     $alert = "success";
@@ -136,12 +130,54 @@ trait GameTraits
         $new_chat->position = 1;
 //      $new_chat->save();
         // return mgs, alert, communication
-
+        rr:
         return ['alert' => $alert, 'message' => $msg];
     }
 
-    private function remove_words_from_player_chavolet($game, $user_id, $word)
+    private function remove_words_from_player_chavolet($game, $user_id, $words, $position)
     {
+
+        $user_chavolet = $this->get_user_chavolet($game, $user_id, $position);
+        $collected = collect($user_chavolet);
+        $array = $collected;
+        // words to array
+        $splitted = str_split($words);
+        foreach ($splitted as $a_word) {
+//            foreach word
+            foreach ($collected as $i => $arr) {
+                // if word is equal to current array value
+                if ($arr == $a_word) {
+                    // set it as empty string
+                    $array[$i] = "";
+                    break;
+                }
+            }
+        }
+        // store chavolet back for that user
+        $this->store_chavolet($game, $position, $array);
+    }
+
+    private function store_user_score($game, $score, $position)
+    {
+        $user_score = 'user_' . $position . '_score';
+        $game->$user_score = $score;
+        $game->save();
+    }
+
+    private function pass_user_turn($game, $user_id)
+    {
+        $current_player = (int)$game->current_player;
+        $number_of_players = $game->partie->typePartie;
+        if ($current_player == (int)$user_id) {
+            if ($current_player < $number_of_players) {
+                $current_player++;
+            } else {
+                $current_player = 1;
+            }
+            $game->current_player = $current_player;
+            $game->save();
+        }
+
 
     }
 
@@ -161,27 +197,6 @@ trait GameTraits
         return $failed === 0;
     }
 
-    private function word_score($word)
-    {
-        $lettres = $this->get_letters();
-        $score = 0;
-
-        foreach ($a = str_split($word) as $letter) {
-            $val = $lettres->where('lettre', $letter)->first();
-            $score += $val->valeur;
-        }
-        return $score;
-    }
-
-    private function check_word_direction($game, $word, $direction = 'v')
-    {
-
-    }
-
-    private function calculate_player_score($game, $user_id, $word)
-    {
-
-    }
 
     private function check_dic($word)
     {
@@ -325,14 +340,16 @@ trait GameTraits
     private function create_new_game_user_chavolet($game, $user_id)
     {
         // store it into first user chavolet
-        $this->store_chavolet($game, 'user_1_chavolet');
+        $this->store_chavolet($game, 1);
     }
 
-    private function store_chavolet(Game $game, $chavolet_user_column)
+    private function store_chavolet(Game $game, $position, $pieces = null)
     {
         // get all game pieces
-        $pieces = $this->generate_new_pieces($game->id, 1);
-        $game->$chavolet_user_column = $pieces;
+        if ($pieces == null)
+            $pieces = $this->generate_new_pieces($game->id, $position);
+        $user_position = 'user_' . $position . '_chavolet';
+        $game->$user_position = $pieces;
         $game->save();
 
     }

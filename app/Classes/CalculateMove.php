@@ -9,38 +9,38 @@ class CalculateMove
 
     public $topLeftX = 0;
     public $topLeftY = 0;
-    public $tile = 0;
+    public $tile = null;
     public $squares;
     public $move;
+    public $error = null;
 
-    public function __construct($input)
+    public function __construct($input, $direction)
     {
-
         $squares = (array)$input;
         $this->squares = $squares;
         $this->move = (object)['words' => [], 'score' => [], 'allTilesBonus' => null, 'tilesPlaced' => null];
-        $this->init($squares);
+        $this->init($squares, $direction);
     }
 
-    public function init($squares): array
+    public function init($squares, $direction)
     {
         // Check that the start field is occupied
-        if (!$squares[7][7]->tile) return ['error' => "start field must be used"];
+        if (!$squares[7][7]->tile) $this->error = "start field must be used";
         // Determine that the placement of the Tile(s) is legal
 
         // Find top-leftmost placed tile
 
-        for ($y = 0; !$this->tile && $y < 15; $y++) {
-            for ($x = 0; !$this->tile && $x < 15; $x++) {
-                if ($squares[$x][$y]->tile && !$squares[$x][$y]->tileLocked) {
-                    $tile = $squares[$x][$y]->tile;
+        for ($y = 0; empty($this->tile) && $y < 15; $y++) {
+            for ($x = 0; empty($this->tile) && $x < 15; $x++) {
+                if (!empty($squares[$x][$y]->tile) && (!$squares[$x][$y]->tileLocked || $squares[$x][$y]->tileLocked == false)) {
+                    $this->tile = $squares[$x][$y]->tile;
                     $this->topLeftX = $x;
                     $this->topLeftY = $y;
                 }
             }
         }
         if (!$this->tile) {
-            return ['error' => "no new tile found"];
+            $this->error = "no new tile found";
         }
 
         // Remember which newly placed tile positions are legal
@@ -48,34 +48,31 @@ class CalculateMove
         $legalPlacements = (array)$first;
         $legalPlacements[$this->topLeftX][$this->topLeftY] = true;
 
-
         $isTouchingOld = $this->touchingOld($this->topLeftX, $this->topLeftY);
-        $horizontal = false;
+        $horizontal = $direction !== 'v';
+
         for ($x = $this->topLeftX + 1; $x < 15; $x++) {
             if (!$this->squares[$x][$this->topLeftY]->tile) {
                 break;
             } else if (!$this->squares[$x][$this->topLeftY]->tileLocked) {
-                $legalPlacements[$x][$this->topLeftY] = true;
+                if (isset($legalPlacements[$x][$this->topLeftY])) $legalPlacements[$x][$this->topLeftY] = true;
                 $horizontal = true;
                 $isTouchingOld = $isTouchingOld || $this->touchingOld($x, $this->topLeftY);
             }
         }
-
         if (!$horizontal) {
             for ($y = $this->topLeftY + 1; $y < 15; $y++) {
                 if (!$this->squares[$this->topLeftX][$y]->tile) {
                     break;
                 } else if (!$this->squares[$this->topLeftX][$y]->tileLocked) {
-                    $legalPlacements[$this->topLeftX][$y] = true;
+                    if (isset($legalPlacements[$this->topLeftX][$y])) $legalPlacements[$this->topLeftX][$y] = true;
                     $isTouchingOld = $isTouchingOld || $this->touchingOld($this->topLeftX, $y);
                 }
             }
         }
 
-        if (!$isTouchingOld && !$legalPlacements[7][7]) {
-            return [
-                'error' =>
-                    'not touching old tile ' . $this->topLeftX . '/' . $this->topLeftY];
+        if (!$isTouchingOld && (isset($legalPlacements[7][7]) && !$legalPlacements[7][7])) {
+            $this->error = 'Not touching old tile ' . $this->topLeftX . '/' . $this->topLeftY;
         }
 
         // Check whether there are any unconnected other placements, count total tiles on board
@@ -85,19 +82,15 @@ class CalculateMove
                 $square = $this->squares[$x][$y];
                 if ($square->tile) {
                     $totalTiles++;
-                    if (!$square->tileLocked && !$legalPlacements[$x][$y]) {
-                        return [
-                            'error' =>
-                                'unconnected placement'];
+                    if ($square->tileLocked == false && (isset($legalPlacements[$x][$y]) && !$legalPlacements[$x][$y])) {
+                        $this->error = 'unconnected placement';
                     }
                 }
             }
         }
 
         if ($totalTiles == 1) {
-            return [
-                'error' =>
-                    'first word must consist of at least two letters'];
+            $this->error = 'first word must consist of at least two letters';
         }
 
 
@@ -117,8 +110,11 @@ class CalculateMove
         for ($x = 0; $x < 15; $x++) {
             for ($y = 0; $y < 15; $y++) {
                 $square = $squares[$x][$y];
-                if ($square->tile && !$square->tileLocked) {
-                    $tilesPlaced->push(['letter' => $square->tile->letter,
+                if ($square->tile && $square->tileLocked == false) {
+                    $tilesPlaced[] = ([
+                        'letter' => $square->tile->letter,
+                        'score' => $square->tile->score,
+                        'tileLocked' => true,
                         'x' => $x,
                         'y' => $y,
                         'blank' => $square->tile->isBlank()]);
@@ -131,7 +127,7 @@ class CalculateMove
         }
         $this->move->tilesPlaced = $tilesPlaced;
 
-        return $this->move->toArray();
+        return $this->move;
     }
 
     // The move was legal, calculate scores
@@ -148,8 +144,8 @@ class CalculateMove
                     for (; $x < 15 && $squares[$x][$y]->tile; $x++) {
                         $square = $squares[$x][$y];
                         $letterScore = $square->tile->score;
-                        $isNewWord = $isNewWord || !$square->tileLocked;
-                        if (!$square->tileLocked) {
+                        $isNewWord = $isNewWord || $square->tileLocked == false;
+                        if ($square->tileLocked == false) {
                             switch ($square->type) {
                                 case
                                 'DoubleLetter':
@@ -167,7 +163,7 @@ class CalculateMove
                             }
                         }
                         $wordScore += $letterScore;
-                        $letters += $square->tile->letter;
+                        $letters .= $square->tile->letter;
                     }
                     $wordScore *= $wordMultiplier;
                     if ($isNewWord) {

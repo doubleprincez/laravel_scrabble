@@ -106,23 +106,6 @@ class Board
         return $y + $word_count < 15;
     }
 
-    public function fromServerData($data)
-    {
-
-//    data.constructor = Board.prototype;
-        for ($y = 0; $y < $data->Dimension; $y++) {
-            for ($x = 0; $x < $data->Dimension; $x++) {
-                $square = $data->squares[$x][$y];
-//            $square = $this->Square;
-//            if ($square->tile) {
-//                $square->tile->prototype = Tile->prototype;
-//            }
-            }
-        }
-//    console.log('fromServerData done');
-//    return data;
-    }
-
 
     protected function forAllSquares($f)
     {
@@ -145,19 +128,6 @@ class Board
         return "Board " . $this->Dimension . " x " . $this->Dimension;
     }
 
-//    public function Rack($size)
-//    {
-//        $this->squares = [];
-//
-//        for ($x = 0; $x < $size; $x++) {
-//            $square = new Square('Normal', $this);
-//            $square->x = $x;
-//            $square->y = -1;
-//            $this->squares[$x] = $square;
-//        }
-//
-////    triggerEvent('RackReady', [$this]);
-//    }
 
 
 }

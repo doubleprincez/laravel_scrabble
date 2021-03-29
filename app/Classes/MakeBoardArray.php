@@ -6,7 +6,7 @@ namespace App\Classes;
 
 class MakeBoardArray
 {
-    public array $array;
+    public $array;
 
     public function __construct()
     {
