@@ -63,10 +63,14 @@ trait GameTraits
         $alert = "error";
         $msg = '';
         // get message !parser
-        $check_pattern = preg_match("/ !placer/", $message);
+        $check_pattern = preg_match("/!placer/", $message);
         // if message does not contain command then upload as just chat
         if ($check_pattern !== 0) {
 
+//            if ($game->current_player != $user_id) {
+//                $msg = "Wait your turn";
+//                goto rr;
+//            }
             // convert each letter to small letters
             $small = strtolower($message);
             $split = explode('!placer', $small);
@@ -78,57 +82,64 @@ trait GameTraits
 
             $words = strtolower(trim($placer[1]));
 
-            // check if word is in dictionary
-            $in_dictionary = $this->check_dic($words);
-            if ($in_dictionary == true) {
-                // check if the words are in player chavolet
-                $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $words);
+            // check if the words are in player chavolet
+            $check_chavolet = $this->check_words_in_chavolet($game, $user_id, $words);
 
-                if ($check_chavolet == true) {
+            if ($check_chavolet == true) {
 
-                    $board = $this->load_server_board($game);
+                $board = $this->load_server_board($game);
 
-                    // returns board object or errors,'occupied','invalid'
-                    $placed = $this->place_user_words($words, $direction, $grid, $board);
+                // returns board object or errors,'occupied','invalid'
+                $placed = $this->place_user_words($words, $direction, $grid, $board);
 
-                    if (!is_object($placed)) {
-                        $msg = $placed; // display error
-                        goto rr;
-                    }
-                    // calculate player move
-                    $touch = $this->calculate_move($board->squares, $direction);
-
-                    if ($touch->error != null) {
-                        $msg = $touch;
-                        goto rr;
-                    }
-                    // get player position
-                    $user_position = $this->get_user_game_position($game, $user_id);
-                    // TODO store player scores
-                    $this->store_user_score($game, $user_id, $user_position);
-                    //  save player game to board
-                    $this->save_board_to_server($game, $touch->move);
-
-                    // remove player chavolet for the word
-                    $this->remove_words_from_player_chavolet($game, $user_id, $words, $user_position);
-
-                    // message
-                    $msg = "Word played successfully";
-                    $alert = "success";
-                } else {
-                    $msg = "Word is not in your Chavolet";
+                if (!is_object($placed)) {
+                    $msg = $placed; // display error
+                    goto rr;
                 }
+                // calculate player move
+                $touch = $this->calculate_move($board->squares, $direction);
+
+                if ($touch->error != null) {
+                    $msg = $touch;
+                    goto rr;
+                }
+                // get player position
+                $user_position = $this->get_user_game_position($game, $user_id);
+
+                // TODO store player scores
+                $this->store_user_score($game, $user_position, $touch->move->score);
+                //  save player game to board
+                $this->save_board_to_server($game, $touch->move);
+
+                // remove player chavolet for the word
+                $this->remove_words_from_player_chavolet($game, $user_id, $words, $user_position);
+
+                // message
+                $msg = "Word played successfully";
+                $alert = "success";
+
             } else {
                 // message
                 $msg = 'Word is not in dictionary';
             }
         }
+
+        if (empty($msg)) {
+            $msg = 'Message Sent';
+            $alert = 'success';
+        }
+
         // save current play as player play details
         $new_chat->user_id = $user_id;
         $new_chat->game_id = $game->id;
         $new_chat->contenu = $message;
+        if ($msg) {
+            $display = $alert == 'error' ? 'text-danger' : 'text-success';
+            $new_chat->contenu = $message . ' <br><span class="' . $display . ' ">' . $msg . '</span>';
+        }
         $new_chat->position = 1;
-//      $new_chat->save();
+        $new_chat->save();
+
         // return mgs, alert, communication
         rr:
         return ['alert' => $alert, 'message' => $msg];
@@ -157,10 +168,10 @@ trait GameTraits
         $this->store_chavolet($game, $position, $array);
     }
 
-    private function store_user_score($game, $score, $position)
+    private function store_user_score($game, $position, $score)
     {
         $user_score = 'user_' . $position . '_score';
-        $game->$user_score = $score;
+        $game->$user_score += $score;
         $game->save();
     }
 
@@ -200,24 +211,6 @@ trait GameTraits
         return $failed === 0;
     }
 
-
-    private function check_dic($word)
-    {
-        $file = json_decode($this->get_dictionary());
-        $lookup = collect($file);
-        return $lookup->contains($word);
-    }
-
-    private function get_dictionary()
-    {
-        $doc = public_path('liste.de.mots.json');
-        $data = file_get_contents($doc);
-//        $curl = curl_init($doc);
-//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-//        $data = curl_exec($curl);
-//        curl_close($curl);
-        return json_decode(json_encode($data), true);
-    }
 
     private function get_letters()
     {

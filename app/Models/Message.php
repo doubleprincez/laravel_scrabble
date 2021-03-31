@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Message
+ * @package App\Models
+ * @property integer user_id
+ * @property integer game_id
+ * @property mixed contenu
+ * @property mixed position
+ */
 class Message extends Model
 {
     use HasFactory, SoftDeletes;

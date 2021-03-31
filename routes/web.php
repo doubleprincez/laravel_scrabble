@@ -73,8 +73,11 @@ Route::post('game/check_new_player', [JeuAPIController::class, 'check_new_player
 Route::post('game/message', [MessageController::class, 'index'])->name('game.message');
 
 // skip user turn
-Route::post('game/skip',[JeuAPIController::class,'skip_turn'])->name('game.skip');
+Route::post('game/skip', [JeuAPIController::class, 'skip_turn'])->name('game.skip');
 
 // reload new pieces
 
-Route::post('game/reload',[JeuAPIController::class,'reload_pieces'])->name('game.reload');
+Route::post('game/reload', [JeuAPIController::class, 'reload_pieces'])->name('game.reload');
+
+
+Route::get('game/test', [MessageController::class, 'index']);

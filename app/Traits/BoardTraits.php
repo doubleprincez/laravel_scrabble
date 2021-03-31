@@ -62,6 +62,7 @@ trait BoardTraits
         $splitted = preg_split("/(,?\s+)|((?<=[a-z])(?=\d))|((?<=\d)(?=[a-z]))/i", $grid);
         // calculating the position of the first word given
         $y = (int)$board->get_letter_grid_position($splitted[0]);
+
         $x = (int)$splitted[1];
         // Note: the placement on the board starts from origin 0
         return $this->word_placer($words, $x - 1, $y - 1, $direction, $board);
@@ -69,23 +70,25 @@ trait BoardTraits
 
     private function word_placer($words, $x, $y, $direction, $board)
     {
+
         $a_word = str_split($words);
         $placed_word_count = 0;
         // check if word will not exceed board walls
         $check_word = $board->word_within_board($x, $y, $direction, $a_word);
         if ($check_word == true) {
-            foreach ($a_word as $iValue) {
+            foreach ($a_word as $k => $iValue) {
                 $placement = $iValue;
                 $letter = Lettre::where('lettre', $placement)->first();
                 $valeur = $letter->valeur;
 
                 if ($direction == 'v') {
-                    $placed_word_count += $board->squares[$x++][$y]->placeTile(new Tile($placement, $valeur), false);
+                    $placed_word_count += $board->squares[$y][$x + $k]->placeTile(new Tile($placement, $valeur), false);
                 } else {
-                    $placed_word_count += $board->squares[$x][$y++]->placeTile(new Tile($placement, $valeur), false);
+                    $placed_word_count += $board->squares[$y + $k][$x]->placeTile(new Tile($placement, $valeur), false);
                 }
             }
-            if ($placed_word_count != count($a_word)) {
+
+            if ((int)$placed_word_count !== count($a_word)) {
                 return 'cell occupied';
             }
             return $board;
@@ -99,10 +102,10 @@ trait BoardTraits
         foreach ($board_records as $each) {
             if ($each->tilesPlaced) {
                 foreach (json_decode($each->tilesPlaced) as $item) {
-                    if (isset($item->type)) $new_board->squares[$item->x][$item->y]->type = $item->type;
+                    if (isset($item->type)) $new_board->squares[$item->y][$item->x]->type = $item->type;
 
-                    $new_board->squares[$item->x][$item->y]->tile = new Tile($item->letter, $item->score);
-                    $new_board->squares[$item->x][$item->y]->tileLocked = $item->tileLocked;
+                    $new_board->squares[$item->y][$item->x]->tile = new Tile($item->letter, $item->score);
+                    $new_board->squares[$item->y][$item->x]->tileLocked = $item->tileLocked;
                 }
             }
         }
@@ -110,12 +113,4 @@ trait BoardTraits
     }
 
 
-    private function touchingOld($x, $y)
-    {
-        return
-            ($x > 0 && $this->squares[$x - 1][$y]->tile && $this->squares[$x - 1][$y]->tileLocked) || ($x < 14 && $this->squares[$x + 1][$y]->tile && $this->squares[$x + 1][$y]->tileLocked)
-            || ($y > 0 && $this->squares[$x][$y - 1]->tile && $this->squares[$x][$y - 1]->tileLocked)
-            || ($y < 14 && $this->squares[$x][$y + 1]->tile && $this->squares[$x][$y + 1]->tileLocked);
-
-    }
 }

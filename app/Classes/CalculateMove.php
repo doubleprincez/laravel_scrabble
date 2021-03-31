@@ -12,13 +12,14 @@ class CalculateMove
     public $tile = null;
     public $squares;
     public $move;
+    public $dictionary = null;
     public $error = null;
 
     public function __construct($input, $direction)
     {
         $squares = (array)$input;
         $this->squares = $squares;
-        $this->move = (object)['words' => [], 'score' => [], 'allTilesBonus' => null, 'tilesPlaced' => null];
+        $this->move = (object)['words' => [], 'score' => 0, 'allTilesBonus' => null, 'tilesPlaced' => null];
         $this->init($squares, $direction);
     }
 
@@ -32,8 +33,8 @@ class CalculateMove
 
         for ($y = 0; empty($this->tile) && $y < 15; $y++) {
             for ($x = 0; empty($this->tile) && $x < 15; $x++) {
-                if (!empty($squares[$x][$y]->tile) && (!$squares[$x][$y]->tileLocked || $squares[$x][$y]->tileLocked == false)) {
-                    $this->tile = $squares[$x][$y]->tile;
+                if (!empty($squares[$y][$x]->tile) && (!$squares[$y][$x]->tileLocked || $squares[$y][$x]->tileLocked == false)) {
+                    $this->tile = $squares[$y][$x]->tile;
                     $this->topLeftX = $x;
                     $this->topLeftY = $y;
                 }
@@ -52,20 +53,20 @@ class CalculateMove
         $horizontal = $direction !== 'v';
 
         for ($x = $this->topLeftX + 1; $x < 15; $x++) {
-            if (!$this->squares[$x][$this->topLeftY]->tile) {
+            if (!$this->squares[$this->topLeftY][$x]->tile) {
                 break;
-            } else if (!$this->squares[$x][$this->topLeftY]->tileLocked) {
-                if (isset($legalPlacements[$x][$this->topLeftY])) $legalPlacements[$x][$this->topLeftY] = true;
+            } else if (!$this->squares[$this->topLeftY][$x]->tileLocked) {
+                if (isset($legalPlacements[$this->topLeftY][$x])) $legalPlacements[$this->topLeftY][$x] = true;
                 $horizontal = true;
                 $isTouchingOld = $isTouchingOld || $this->touchingOld($x, $this->topLeftY);
             }
         }
         if (!$horizontal) {
             for ($y = $this->topLeftY + 1; $y < 15; $y++) {
-                if (!$this->squares[$this->topLeftX][$y]->tile) {
+                if (!$this->squares[$y][$this->topLeftX]->tile) {
                     break;
-                } else if (!$this->squares[$this->topLeftX][$y]->tileLocked) {
-                    if (isset($legalPlacements[$this->topLeftX][$y])) $legalPlacements[$this->topLeftX][$y] = true;
+                } else if (!$this->squares[$y][$this->topLeftX]->tileLocked) {
+                    if (isset($legalPlacements[$y][$this->topLeftX])) $legalPlacements[$y][$this->topLeftX] = true;
                     $isTouchingOld = $isTouchingOld || $this->touchingOld($this->topLeftX, $y);
                 }
             }
@@ -77,12 +78,12 @@ class CalculateMove
 
         // Check whether there are any unconnected other placements, count total tiles on board
         $totalTiles = 0;
-        for ($x = 0; $x < 15; $x++) {
-            for ($y = 0; $y < 15; $y++) {
-                $square = $this->squares[$x][$y];
+        for ($y = 0; $y < 15; $y++) {
+            for ($x = 0; $x < 15; $x++) {
+                $square = $this->squares[$y][$x];
                 if ($square->tile) {
                     $totalTiles++;
-                    if ($square->tileLocked == false && (isset($legalPlacements[$x][$y]) && !$legalPlacements[$x][$y])) {
+                    if ($square->tileLocked == false && (isset($legalPlacements[$y][$x]) && !$legalPlacements[$y][$x])) {
                         $this->error = 'unconnected placement';
                     }
                 }
@@ -93,30 +94,29 @@ class CalculateMove
             $this->error = 'first word must consist of at least two letters';
         }
 
-
         $this->move->score = $this->horizontalWordScores($squares);
         // Create rotated version of the board to calculate vertical word scores->
         $second = new MakeBoardArray();
         $rotatedSquares = (array)$second;
-        for ($x = 0; $x < 15; $x++) {
-            for ($y = 0; $y < 15; $y++) {
-                $rotatedSquares[$x][$y] = $squares[$y][$x];
+        for ($y = 0; $y < 15; $y++) {
+            for ($x = 0; $x < 15; $x++) {
+                $rotatedSquares[$y][$x] = $squares[$x][$y];
             }
         }
         $this->move->score += $this->horizontalWordScores($rotatedSquares);
 
         // Collect and count tiles placed->
         $tilesPlaced = [];
-        for ($x = 0; $x < 15; $x++) {
-            for ($y = 0; $y < 15; $y++) {
-                $square = $squares[$x][$y];
+        for ($y = 0; $y < 15; $y++) {
+            for ($x = 0; $x < 15; $x++) {
+                $square = $squares[$y][$x];
                 if ($square->tile && $square->tileLocked == false) {
                     $tilesPlaced[] = ([
                         'letter' => $square->tile->letter,
                         'score' => $square->tile->score,
                         'tileLocked' => true,
-                        'x' => $x,
-                        'y' => $y,
+                        'x' => $square->x,
+                        'y' => $square->y,
                         'blank' => $square->tile->isBlank()]);
                 }
             }
@@ -126,7 +126,6 @@ class CalculateMove
             $this->move->allTilesBonus = true;
         }
         $this->move->tilesPlaced = $tilesPlaced;
-
         return $this->move;
     }
 
@@ -136,16 +135,25 @@ class CalculateMove
         $score = 0;
         for ($y = 0; $y < 15; $y++) {
             for ($x = 0; $x < 14; $x++) {
-                if ($squares[$x][$y]->tile && $squares[$x + 1][$y]->tile) {
+                if ($squares[$y][$x]->tile && $squares[$y][($x + 1)]->tile) {
                     $wordScore = 0;
                     $letters = '';
+                    $touching = collect([]);
                     $wordMultiplier = 1;
                     $isNewWord = false;
-                    for (; $x < 15 && $squares[$x][$y]->tile; $x++) {
-                        $square = $squares[$x][$y];
+                    $foundTouch = false;
+                    for (; $x < 15 && $squares[$y][$x]->tile; $x++) {
+                        $square = $squares[$y][$x];
                         $letterScore = $square->tile->score;
                         $isNewWord = $isNewWord || $square->tileLocked == false;
                         if ($square->tileLocked == false) {
+//                            $touches = $this->removeEmptyCells($this->getOldTouch($square->x, $square->y));
+//                            if ($touches !== []) {
+//                                $foundTouch = true;
+//                                $touching->add($touches);
+//                            }
+                            // check if word is in dictionary
+//                            $in_dictionary = $this->check_dic($words);
                             switch ($square->type) {
                                 case
                                 'DoubleLetter':
@@ -162,26 +170,123 @@ class CalculateMove
                                     break;
                             }
                         }
+                        // calculates and store new words
                         $wordScore += $letterScore;
                         $letters .= $square->tile->letter;
                     }
+
                     $wordScore *= $wordMultiplier;
+
                     if ($isNewWord) {
-                        $this->move->words[] = ['word' => $letters, 'score' => $wordScore];
-                        $score += $wordScore;
+                        $inDic = $this->check_in_dictionary($letters);
+                        if ($inDic) {
+                            $this->move->words[] = ['word' => $letters, 'score' => $wordScore];
+                            $score += $wordScore;
+                        }
+
                     }
                 }
             }
         }
-        return $score;
+        return (int)$score;
     }
 
-    public function touchingOld($x, $y)
+    private function check_in_dictionary($word)
     {
+        if ($this->dictionary == null) {
+            $file = json_decode($this->get_dictionary());
+            $this->dictionary = collect($file);
+            $lookup = collect($file);
+        } else {
+            $lookup = $this->dictionary;
+        }
+        return $lookup->contains($word);
+    }
+
+    private function get_dictionary()
+    {
+        $doc = public_path('liste.de.mots.json');
+        $data = file_get_contents($doc);
+//        $curl = curl_init($doc);
+//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+//        $data = curl_exec($curl);
+//        curl_close($curl);
+        return json_decode(json_encode($data), true);
+    }
+
+    public function touchingOld($x, $y): bool
+    {
+
+        $check_sub1 = $x > 0 && (isset($this->squares[($x - 1)][$y]) && $this->squares[($x - 1)][$y]->tile);
+
+        $check_sub2 = isset($this->squares[($x - 1)][$y]) && $this->squares[($x - 1)][$y]->tileLocked == true;
+
+        $check_sub3 = $x < 14 && (isset($this->squares[($x + 1)][$y]) && $this->squares[($x + 1)][$y]->tile);
+
+        $check_sub4 = isset($this->squares[($x + 1)][$y]) && $this->squares[($x + 1)][$y]->tileLocked == true;
+
+        $check_sub5 = $y > 0 && (isset($this->squares[$x][($y - 1)]) && $this->squares[$x][($y - 1)]->tile);
+        $check_sub6 = isset($this->squares[$x][($y - 1)]) && $this->squares[$x][($y - 1)]->tileLocked == true;
+
+        $check_sub7 = $y < 14 && (isset($this->squares[$x][($y + 1)]) && $this->squares[$x][($y + 1)]->tile);
+
+        $check_sub8 = isset($this->squares[$x][($y + 1)]) && $this->squares[$x][($y + 1)]->tileLocked == true;
+
+        $check_1 = ($check_sub1 && $check_sub2);
+        $check_2 = ($check_sub3 && $check_sub4);
+        $check_3 = ($check_sub5 && $check_sub6);
+        $check_4 = ($check_sub7 && $check_sub8);
         return
-            ($x > 0 && $this->squares[$x - 1][$y]->tile && $this->squares[$x - 1][$y]->tileLocked) || ($x < 14 && $this->squares[$x + 1][$y]->tile && $this->squares[$x + 1][$y]->tileLocked)
-            || ($y > 0 && $this->squares[$x][$y - 1]->tile && $this->squares[$x][$y - 1]->tileLocked)
-            || ($y < 14 && $this->squares[$x][$y + 1]->tile && $this->squares[$x][$y + 1]->tileLocked);
+            $check_1 || $check_2 || $check_3 || $check_4;
 
     }
+
+//    private function getOldTouch($x, $y)
+//    {
+//
+//        $values = [];
+//        $check_sub1 = $x > 0 && (isset($this->squares[($x - 1)][$y]) && $this->squares[($x - 1)][$y]->tile);
+//        $check_sub2 = isset($this->squares[($x - 1)][$y]) && $this->squares[($x - 1)][$y]->tileLocked == true;
+//        $check_1 = ($check_sub1 && $check_sub2);
+//        if ($check_1) {
+//            $values[] = $this->squares[($x - 1)][$y];
+//        } else {
+//            $values[] = null;
+//        }
+//
+//        $check_sub3 = $x < 14 && (isset($this->squares[($x + 1)][$y]) && $this->squares[($x + 1)][$y]->tile);
+//        $check_sub4 = isset($this->squares[($x + 1)][$y]) && $this->squares[($x + 1)][$y]->tileLocked == true;
+//        $check_2 = ($check_sub3 && $check_sub4);
+//        if ($check_2) {
+//            $values[] = $this->squares[($x + 1)][$y];
+//        } else {
+//            $values[] = null;
+//        }
+//
+//        $check_sub5 = $y > 0 && (isset($this->squares[$x][($y - 1)]) && $this->squares[$x][($y - 1)]->tile);
+//        $check_sub6 = isset($this->squares[$x][($y - 1)]) && $this->squares[$x][($y - 1)]->tileLocked == true;
+//        $check_3 = ($check_sub5 && $check_sub6);
+//        if ($check_3) {
+//            $values[] = $this->squares[$x][($y - 1)];
+//        } else {
+//            $values[] = null;
+//        }
+//
+//        $check_sub7 = $y < 14 && (isset($this->squares[$x][($y + 1)]) && $this->squares[$x][($y + 1)]->tile);
+//        $check_sub8 = isset($this->squares[$x][($y + 1)]) && $this->squares[$x][($y + 1)]->tileLocked == true;
+//        $check_4 = ($check_sub7 && $check_sub8);
+//        if ($check_4) {
+//            $values[] = $this->squares[$x][($y + 1)];
+//        } else {
+//            $values[] = null;
+//        }
+//
+//        return $values;
+//    }
+
+    private function removeEmptyCells($array)
+    {
+        return array_filter($array);
+    }
+
 }

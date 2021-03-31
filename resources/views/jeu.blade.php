@@ -91,6 +91,7 @@
 @section('scripts')
     <script rel="stylesheet" src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jeu.js') }}" defer></script>
+
     <script>
         $.ajaxSetup({
             headers: {
@@ -122,7 +123,9 @@
                         data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}, message: input},
                         success: function (data) {
                             if (data) {
-                                console.log(data);
+                                if (data.alert) {
+                                    sendNotification(data.type,data.message);
+                                }
                                 // TODO append new chat message to array of chatBox
 
                             }
@@ -134,7 +137,6 @@
                 }
             })
         });
-
         var checkTime = () => {
             var url = '{{ route('game.checkTimer') }}';
             // function to check if player time is still active
@@ -144,6 +146,9 @@
                 type: 'post',
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
                 success: function (data) {
+                    if (data.alert) {
+                        sendNotification(data.type,data.message);
+                    }
                     if (data.active === true || data.active === 'true') {
                         if (turnCount === 0) {
                             // notify current user of turn
@@ -167,7 +172,6 @@
                 }
             })
         }
-
         var userchavolets = (game, current) => {
             var p1, p2, p3, p4 = 0;
             let p1Score, p2Score, p3Score, p4Score = '';
@@ -215,7 +219,9 @@
                 type: 'post',
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
                 success: function (data) {
-                    console.log(data);
+                    if (data.alert) {
+                        sendNotification(data.type,data.message);
+                    }
                 }
             });
         }
@@ -226,7 +232,9 @@
                 type: 'post',
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
                 success: function (data) {
-                    console.log(data)
+                    if (data.alert) {
+                        sendNotification(data.type,data.message);
+                    }
                 }
             });
         }
@@ -246,20 +254,17 @@
                 var position = messages[i].position === true ? '<li class="right clearfix"><span class="chat-img pull-right">' : '<li class="left clearfix"><span class="chat-img pull-left">';
                 var right = messages[i].position === true ? 'text-right' : '';
                 chats += position + '<img width="40" height="40" src="' + messages[i].image + '" alt="' + messages[i].user_name + ' Avatar" class="img-circle"/></span> <div class="chat-body clearfix"> <div class="header ' + right + '"> <strong class="primary-font">' + messages[i].user_name + '</strong> <small class="pull-right text-muted"> <span class="glyphicon glyphicon-time"></span>' + messages[i].created_at + '</small> </div> <p> ' + messages[i].contenu + ' </p> </div>';
-
             }
-
             $('#chat').html(chats);
-
         }
         var plotBoard = (data) => {
-            var setPiece, children, parent, addSpan;
+            var setPiece, children, parent;
             for (var j = 0; j < data.length; j++) {
                 for (var i = 0; i < data.length; i++) {
-                    parent = $('#sq-' + (data[i][j].x + 1) + '-' + (data[i][j].y + 1));
+                    parent = $('#sq-' + (data[j][i].y + 1) + '-' + (data[j][i].x + 1));
                     children = parent.children();
-                    if (data[i][j].tile) {
-                        setPiece = '<div class="flex-item">' + data[i][j].tile.letter + '<sub class="number">' + data[i][j].tile.score + '</sub>';
+                    if (data[j][i].tile) {
+                        setPiece = '<div class="flex-item">' + data[j][i].tile.letter + '<sub class="number">' + data[j][i].tile.score + '</sub>';
                         parent.html(setPiece);
                         // if (parent.find('span').length) {
                         //     parent.find('span').html(setPiece);
@@ -272,6 +277,9 @@
             }
         }
         setInterval(checkTime, 4000);
+        var sendNotification = (type, message) => {
+            $.notify(message, type);
+        }
     </script>
 
 @endsection

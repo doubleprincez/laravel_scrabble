@@ -71,7 +71,7 @@ class Board
                 $square->x = $x;
                 $square->y = $y;
 
-                $this->squares[$x][$y] = $square;
+                $this->squares[$y][$x] = $square;
             }
         }
 //    triggerEvent('BoardReady', [ $this ]);
@@ -100,10 +100,10 @@ class Board
         $word_count = count($spliced_word);
         // vertically the words does not go beyond board range
         if ($direction == 'v') {
-            return $x + $word_count < 15;
+            return $x + $word_count < 15 && $x - $word_count > 0;
         }
         // horizontally the word does not exceed range too
-        return $y + $word_count < 15;
+        return $y + $word_count < 15 && $y - $word_count > 0;
     }
 
 
@@ -111,7 +111,7 @@ class Board
     {
         for ($y = 0; $y < $this->Dimension; $y++) {
             for ($x = 0; $x < $this->Dimension; $x++) {
-                $f($this->squares[$x][$y]);
+                $f($this->squares[$y][$x]);
             }
         }
     }
