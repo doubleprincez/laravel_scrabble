@@ -33,13 +33,13 @@
     <div class="reserve">
         <h6><b>Nb lettres dans la reserve:</b><span id="stock">{{ $game->stock->remaining() }}</span></h6>
         <div class="container-fluid" style="z-index: 5;position: absolute">
-            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">Skip <i
+            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">passer <i
                         class="fa  fa-angle-double-right "></i></button>
             <button class="btn btn-sm btn-outline-secondary" title="refill new pieces" onclick="reloadPieces($(this))">
-                <i class="fa fa-circle-notch"></i> reload
+                <i class="fa fa-circle-notch"></i> recharger
             </button>
             <button class="btn btn-sm btn-outline-info" onclick="changeRack($(this))"><i
-                        class="fa fa-recycle"></i> Shuffle
+                        class="fa fa-recycle"></i> mélanger
             </button>
         </div>
     </div>
@@ -127,11 +127,17 @@
                         data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}, message: input},
                         success: function (data) {
                             if (data) {
-                                if (data.alert) {
-                                    sendNotification(data.alert, data.message);
-                                }
                                 // TODO append new chat message to array of chatBox
+                                if (data.message === '!quitter') {
+                                    if (confirm('voulez-vous quitter le jeu?')) {
+                                        window.location.href = '{{ route('game.quitter') }}?game=' + {{ $game->id }};
+                                    }
+                                }else{
+                                    if (data.alert) {
+                                        sendNotification(data.alert, data.message);
+                                    }
 
+                                }
                             }
                         },
                         error: function (err) {
@@ -287,6 +293,7 @@
                 var right = messages[i].position === true ? 'text-right' : '';
                 chats += position + '<img width="40" height="40" src="' + messages[i].image + '" alt="' + messages[i].user_name + ' Avatar" class="img-circle"/></span> <div class="chat-body clearfix"> <div class="header ' + right + '"> <strong class="primary-font">' + messages[i].user_name + '</strong> <small class="pull-right text-muted"> <span class="glyphicon glyphicon-time"></span>' + messages[i].created_at + '</small> </div> <p> ' + messages[i].contenu + ' </p> </div>';
             }
+
             $('#chat').html(chats);
         }
         var plotBoard = (data) => {

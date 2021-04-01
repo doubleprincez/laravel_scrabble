@@ -129,6 +129,12 @@ trait GameTraits
             $alert = 'success';
         }
 
+        $check_quitter = preg_match("/!quitter/", $message);
+
+        if ($check_quitter) {
+            return ['alert' => $alert, 'message' => '!quitter'];
+            exit();
+        }
         // save current play as player play details
         $new_chat->user_id = $user_id;
         $new_chat->game_id = $game->id;
@@ -139,6 +145,7 @@ trait GameTraits
         }
         $new_chat->position = 1;
         $new_chat->save();
+
 
         // return mgs, alert, communication
         rr:
