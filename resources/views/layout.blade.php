@@ -50,7 +50,8 @@
 @yield('scripts')
 <script>
     var sendNotification = (type, message) => {
-        $.notify(message, type);
+        // $.notify.defaults({ className: "success" });
+        $.notify(message, {className: type,clickToHide: true,  autoHideDelay: 8000,  hideDuration: 500,});
     }
 </script>
 </body>

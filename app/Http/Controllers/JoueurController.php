@@ -20,12 +20,12 @@ class JoueurController extends Controller
      * Display a listing of the resource.
      *
      */
-    public function index()
-    {
-        dd('joueu index');
-        $joueur = Joueur::all()->toArray(); /* toArray methode will convert to array format to stored in $joueur variable */
-        return view('index', compact('joueur')); /* this compact function will create  an array from  $joueur which we can access in index file folder  */
-    }
+//    public function index()
+//    {
+//        dd('joueu index');
+//        $joueur = Joueur::all()->toArray(); /* toArray methode will convert to array format to stored in $joueur variable */
+//        return view('index', compact('joueur')); /* this compact function will create  an array from  $joueur which we can access in index file folder  */
+//    }
 
 
     /**
@@ -51,10 +51,10 @@ class JoueurController extends Controller
         $result = $joueur->save();
 
         if ($result) {
-            $msg = ["Resultat" => "Data has been saved "];
+            $msg = ["success" => "Data has been saved "];
 
         } else {
-            $msg = ["Resultat" => "Data has not been saved "];
+            $msg = ["error" => "Data has not been saved "];
 
         }
 

@@ -155,7 +155,7 @@
                     // get list of players as array
                     $('#counter').text(data.count);
                     if (data.alert) {
-                        sendNotification(data.type, data.message);
+                        sendNotification(data.alert,data.message);
                     }
                     if (data.players) {
                         var players = [];

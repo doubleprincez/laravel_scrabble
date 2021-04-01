@@ -79,5 +79,7 @@ Route::post('game/skip', [JeuAPIController::class, 'skip_turn'])->name('game.ski
 
 Route::post('game/reload', [JeuAPIController::class, 'reload_pieces'])->name('game.reload');
 
+Route::post('game/rack/change', [JeuAPIController::class, 'rack_change'])->name('game.rack.change');
 
-Route::get('game/test', [MessageController::class, 'index']);
+Route::get('game/test', [JeuAPIController::class, 'rack_change']);
+

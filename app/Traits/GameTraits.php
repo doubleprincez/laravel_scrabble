@@ -187,12 +187,44 @@ trait GameTraits
             }
             $game->current_player = $current_player;
             $game->save();
-            return 'Turn Skipped';
+            return ['msg' => 'Turn Skipped', 'alert' => 'success'];
         } else {
-            return 'Not your Turn';
+            return ['msg' => 'Not your Turn', 'alert' => 'error'];
         }
 
 
+    }
+
+    private function switch_player_pieces($game, $user_id)
+    {
+        $type = 'error';
+        // Select player position an chavolet
+        $position = $this->user_chavolet_position($game, $user_id);
+        // get if the player has no more playing piece left
+        $user_chavolet = collect($this->get_user_chavolet($game, $user_id, $position));
+        // can only shuffle full rack
+        if (count($user_chavolet) == 7) {
+            // check if pieces are in stock
+            $stock = $this->get_game_stocks($game->id);
+
+            if (count($stock) > 7) {
+                $new_pieces = [];
+                // shuffle each word piece for another
+                foreach ($user_chavolet as $piece) {
+                    $this->return_piece_to_stock($game, $piece);
+                    $new_pieces[] = $this->get_one_random_piece($game);
+                }
+                $this->store_chavolet($game, $position, $new_pieces);
+                $msg = 'New Pieces Generated';
+                $type = 'success';
+            } else {
+                $msg = 'Out of stock';
+            }
+
+        } else {
+            $msg = 'Can only Shuffle full rack';
+        }
+        return ['alert' => $type, 'msg' => $msg];
     }
 
     private function check_words_in_chavolet($game, $user_id, $word)
@@ -339,7 +371,7 @@ trait GameTraits
         $this->store_chavolet($game, 1);
     }
 
-    private function store_chavolet(Game $game, $position, $pieces = null)
+    private function store_chavolet(Game $game, $position, $pieces = null): void
     {
         // get all game pieces
         if ($pieces == null)
@@ -455,6 +487,13 @@ trait GameTraits
         $this->store_stock($parse[$rand]->id, $game->id, $parse[$rand]);
 
         return $removed_letter->lettre;
+    }
+
+    private function return_piece_to_stock($game, $piece)
+    {
+        $piece = $game->stock->where('lettre', $piece)->first();
+        $piece->quantite++;
+        $piece->save();
     }
 
     private function store_stock($stock_id, $game_id, $values)

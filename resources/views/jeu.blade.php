@@ -33,10 +33,14 @@
     <div class="reserve">
         <h6><b>Nb lettres dans la reserve:</b><span id="stock">{{ $game->stock->remaining() }}</span></h6>
         <div class="container-fluid" style="z-index: 5;position: absolute">
-            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">Skip &gt;&gt;</button>
-            <button class="btn btn-sm btn-outline-secondary" title="refill new pieces" onclick="reloadPieces()"> reload
-                <i
-                        class="fa fa-recycle"></i></button>
+            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">Skip <i
+                        class="fa  fa-angle-double-right "></i></button>
+            <button class="btn btn-sm btn-outline-secondary" title="refill new pieces" onclick="reloadPieces($(this))">
+                <i class="fa fa-circle-notch"></i> reload
+            </button>
+            <button class="btn btn-sm btn-outline-info" onclick="changeRack($(this))"><i
+                        class="fa fa-recycle"></i> Shuffle
+            </button>
         </div>
     </div>
     <div class="btcom">
@@ -124,7 +128,7 @@
                         success: function (data) {
                             if (data) {
                                 if (data.alert) {
-                                    sendNotification(data.type,data.message);
+                                    sendNotification(data.alert, data.message);
                                 }
                                 // TODO append new chat message to array of chatBox
 
@@ -147,7 +151,7 @@
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }} },
                 success: function (data) {
                     if (data.alert) {
-                        sendNotification(data.type,data.message);
+                        sendNotification(data.alert, data.message);
                     }
                     if (data.active === true || data.active === 'true') {
                         if (turnCount === 0) {
@@ -220,21 +224,49 @@
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
                 success: function (data) {
                     if (data.alert) {
-                        sendNotification(data.type,data.message);
+                        sendNotification(data.alert, data.message);
                     }
                 }
             });
         }
-        var reloadPieces = () => {
+        var reloadPieces = (el = null) => {
+            if (el)
+                el.children('i').addClass('fa-spin');
+
             var url = '{{ route('game.reload') }}';
             $.ajax({
                 url: url,
                 type: 'post',
                 data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
                 success: function (data) {
+
+                    if (el) el.children('i').removeClass('fa-spin');
+
                     if (data.alert) {
-                        sendNotification(data.type,data.message);
+                        sendNotification(data.alert, data.message);
                     }
+                },
+                error: function (err) {
+                    if (el) el.children('i').removeClass('fa-spin');
+
+                }
+            });
+        }
+        var changeRack = (el = null) => {
+            if (el) el.children('i').addClass('fa-pulse');
+            var url = '{{ route('game.rack.change') }}';
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {_token: "{{ csrf_token() }}", gameId:{{ $game->id }}},
+                success: function (data) {
+                    if (el) el.children('i').removeClass('fa-pulse');
+                    if (data.alert) {
+                        sendNotification(data.alert, data.message);
+                    }
+                },
+                error: function (err) {
+                    if (el) el.children('i').removeClass('fa-pulse');
                 }
             });
         }

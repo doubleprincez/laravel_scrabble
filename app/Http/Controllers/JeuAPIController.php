@@ -72,9 +72,9 @@ class JeuAPIController extends Controller
             $game_id = request()->get('gameId');
             $game = $this->get_game_by_id($game_id);
             // skip player turn
-            $msg = $this->pass_user_turn($game, $user_id);
-            $alert = 'success';
-
+            $array = $this->pass_user_turn($game, $user_id);
+            $msg = $array['msg'];
+            $alert = $array['alert'];
         } else {
             $msg = 'unable to select game';
         }
@@ -89,9 +89,10 @@ class JeuAPIController extends Controller
             $user_id = auth()->id();
             $game_id = request()->get('gameId');
             $game = $this->get_game_by_id($game_id);
-            $new_chovalet = $this->reload_user_chavolet($game, $user_id);
+            $new_chavolet = $this->reload_user_chavolet($game, $user_id);
             $position = $this->get_user_game_position($game, $user_id);
-            $this->store_chavolet($game, $user_id, $new_chovalet);
+            $this->store_chavolet($game, $user_id, $new_chavolet
+            );
             $msg = 'Reloaded';
             $alert = 'success';
 
@@ -99,6 +100,26 @@ class JeuAPIController extends Controller
             $msg = 'unable to select game';
         }
         return $this->format_response($alert, $msg);
+    }
+
+    public function rack_change()
+    {
+        $msg = '';
+        $alert = 'error';
+
+        if (request()->has('gameId')) {
+            $user_id = auth()->id();
+            $game_id = request()->get('gameId');
+            $game = $this->get_game_by_id($game_id);
+            // skip player turn
+            $array = $this->switch_player_pieces($game, $user_id);
+            $msg = $array['msg'];
+            $alert = $array['alert'];
+        } else {
+            $msg = 'unable to select game';
+        }
+        return $this->format_response($alert, $msg);
+
     }
 
     private function format_response($alert, $message)
