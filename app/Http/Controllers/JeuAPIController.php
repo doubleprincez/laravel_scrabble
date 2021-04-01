@@ -126,4 +126,24 @@ class JeuAPIController extends Controller
     {
         return response()->json(['alert' => $alert, 'message' => $message]);
     }
+
+    public function restart_game()
+    {
+        $alert = 'error';
+        $msg = '';
+        if (request()->has('gameId')) {
+            $user_id = auth()->id();
+            $game_id = request()->get('gameId');
+            //
+            $game = $this->get_game_by_id($game_id);
+            if ($game->user_id_1 == $user_id) {
+                $msg = $this->restart_game_from_scratch($game);
+                $alert = 'success';
+            } else {
+                $msg = 'Seul le joueur 1 peut redémarrer';
+            }
+
+        }
+        return $this->format_response($alert, $msg);
+    }
 }

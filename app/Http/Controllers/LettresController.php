@@ -53,7 +53,7 @@ class LettresController extends Controller
     {
         if (request()->has('game')) {
             $game = $this->get_game_by_id(request()->get('game'));
-            if ($game->game_status === 0)
+//            if ($game->game_status === 0)
                 return view('ended', compact('game'));// return game stat
         }
         return back();

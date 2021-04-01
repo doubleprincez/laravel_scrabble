@@ -4,6 +4,7 @@
 namespace App\Traits;
 
 
+use App\Models\Board;
 use App\Models\Game;
 use App\Models\Lettre;
 use App\Models\Message;
@@ -647,5 +648,38 @@ trait GameTraits
             }
         }
         return $object;
+    }
+
+    private function restart_game_from_scratch($game)
+    {
+        // clear all game data
+        $game->user_1_chavolet = null;
+        $game->user_2_chavolet = null;
+        $game->user_3_chavolet = null;
+        $game->user_4_chavolet = null;
+        $game->user_1_score = 0;
+        $game->user_2_score = 0;
+        $game->user_3_score = 0;
+        $game->user_4_score = 0;
+        $game->current_player = 1;
+        $game->start_time = now();
+        $game->game_status = 1;
+
+        // delete all stock and create new stock
+        $this->delete_all_stock($game);
+        // clear board
+        $this->clear_game_board($game);
+        $game->save();
+        return 'redirect';
+    }
+
+    private function clear_game_board($game)
+    {
+        return Board::where('game_id', $game->id)->delete();
+    }
+
+    private function delete_all_stock($game)
+    {
+        return Stock::where('game_id', $game->id)->delete();
     }
 }

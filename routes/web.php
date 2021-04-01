@@ -81,5 +81,7 @@ Route::post('game/reload', [JeuAPIController::class, 'reload_pieces'])->name('ga
 
 Route::post('game/rack/change', [JeuAPIController::class, 'rack_change'])->name('game.rack.change');
 
+
+Route::post('game/restart', [JeuAPIController::class, 'restart_game'])->name('game.restart');
 //Route::get('game/test', [MessageController::class, 'index']);
 
