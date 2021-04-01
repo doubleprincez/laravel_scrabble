@@ -18,6 +18,7 @@ class MessageController extends Controller
             $game = $this->get_game_by_id(request()->get('gameId'));
             // trim message i.e remove any spaces before and after message & no html tags allowed
             $message = htmlspecialchars(trim(request()->get('message')));
+
             // send to the message function that handles chat and playing the pieces
             return $this->message_manager($game, $user_id, $message);
         }

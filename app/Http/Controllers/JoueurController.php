@@ -16,17 +16,6 @@ class JoueurController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     */
-//    public function index()
-//    {
-//        dd('joueu index');
-//        $joueur = Joueur::all()->toArray(); /* toArray methode will convert to array format to stored in $joueur variable */
-//        return view('index', compact('joueur')); /* this compact function will create  an array from  $joueur which we can access in index file folder  */
-//    }
-
 
     /**
      * Store a newly created resource in storage.
@@ -51,10 +40,10 @@ class JoueurController extends Controller
         $result = $joueur->save();
 
         if ($result) {
-            $msg = ["success" => "Data has been saved "];
+            $msg = ["success" => "Les données ont été enregistrées "];
 
         } else {
-            $msg = ["error" => "Data has not been saved "];
+            $msg = ["error" => "Les données n'ont pas été enregistrées "];
 
         }
 

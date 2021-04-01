@@ -6,7 +6,6 @@ namespace App\Traits;
 use App\Classes\Board;
 use App\Classes\CalculateMove;
 use App\Classes\Tile;
-use App\Models\Game;
 use App\Models\Lettre;
 
 trait BoardTraits
@@ -89,11 +88,11 @@ trait BoardTraits
             }
 
             if ((int)$placed_word_count !== count($a_word)) {
-                return 'cell occupied';
+                return 'Cellule occupée';
             }
             return $board;
         }
-        return 'invalid';
+        return 'Invalide';
     }
 
     private function populate_pieces_to_board($board_records)

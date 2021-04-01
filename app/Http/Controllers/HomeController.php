@@ -27,10 +27,10 @@ class HomeController extends Controller
 
         if (auth()->user()->photo) {
             return redirect()->route('game.select');
-        }else{
-            $nick = $this->generate_nick();
-            return view('acceuil')->with(compact('nick'));
         }
+        $nick = $this->generate_nick();
+        return view('acceuil')->with(compact('nick'));
+
     }
 
     public function ready()
@@ -39,14 +39,12 @@ class HomeController extends Controller
         if (auth()->user()->photo) {
             return redirect()->route('game.select');
 
-        } else {
-         $nick = $this->generate_nick();
-            // take user to avatar settings page
-            return view('acceuil')->with(compact('nick'));
         }
+        $nick = $this->generate_nick();
+        // take user to avatar settings page
+        return view('acceuil')->with(compact('nick'));
+
     }
-
-
 
 
 }

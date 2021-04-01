@@ -115,8 +115,7 @@ class PartieController extends Controller
 
         // move user to the waiting room if the number of players is not complete yet
 
-
-        return redirect()->route('game.wait', compact('game'))->with(['success' => 'Partie saved!']);
+        return redirect()->route('game.wait', compact('game'))->with(['success' => 'Partie enregistré!']);
 
     }
 
@@ -135,12 +134,11 @@ class PartieController extends Controller
                 $game->$remove_user = null;
                 $game->save();
                 return redirect()->route('game.ready')->with(['Resultat' => 'Game Quitted']);
-            } else {
-                return back()->with(['error' => 'Cannot Find Game']);
             }
-        } else {
-            return back()->with(['error' => 'No Game Selected']);
+            return back()->with(['error' => 'Impossible de trouver le jeu']);
+
         }
+        return back()->with(['error' => 'Aucun jeu sélectionné']);
 
 
     }

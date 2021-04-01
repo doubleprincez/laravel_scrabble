@@ -76,7 +76,7 @@ class JeuAPIController extends Controller
             $msg = $array['msg'];
             $alert = $array['alert'];
         } else {
-            $msg = 'unable to select game';
+            $msg = 'Impossible de sélectionner le jeu';
         }
         return $this->format_response($alert, $msg);
     }
@@ -97,7 +97,7 @@ class JeuAPIController extends Controller
             $alert = 'success';
 
         } else {
-            $msg = 'unable to select game';
+            $msg = 'Impossible de sélectionner le jeu';
         }
         return $this->format_response($alert, $msg);
     }
@@ -116,7 +116,7 @@ class JeuAPIController extends Controller
             $msg = $array['msg'];
             $alert = $array['alert'];
         } else {
-            $msg = 'unable to select game';
+            $msg = 'Impossible de sélectionner le jeu';
         }
         return $this->format_response($alert, $msg);
 

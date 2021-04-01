@@ -44,16 +44,19 @@ class LettresController extends Controller
 
         }
 
-        return redirect()->route('game.ended')->with(['Resultat' => 'Game Ended']);
+        return redirect()->route('game.ended', compact('game'))->with(['success' => 'Jeu terminé']);
 
     }
 
 
     public function game_ended()
     {
-        // return game stat
-
-        return view('ended');
+        if (request()->has('game')) {
+            $game = $this->get_game_by_id(request()->get('game'));
+            if ($game->game_status === 0)
+                return view('ended', compact('game'));// return game stat
+        }
+        return back();
     }
 
 

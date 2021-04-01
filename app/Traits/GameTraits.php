@@ -62,15 +62,20 @@ trait GameTraits
         $new_chat = new Message();
         $alert = "error";
         $msg = '';
+        $check_quitter = preg_match("/!quitter/", $message);
+
+        if ($check_quitter) {
+            return ['alert' => $alert, 'message' => '!quitter'];
+        }
         // get message !parser
         $check_pattern = preg_match("/!placer/", $message);
         // if message does not contain command then upload as just chat
         if ($check_pattern !== 0) {
 
-//            if ($game->current_player != $user_id) {
-//                $msg = "Wait your turn";
-//                goto rr;
-//            }
+            if ($game->current_player != $user_id) {
+                $msg = "Attends ton tour";
+                goto rr;
+            }
             // convert each letter to small letters
             $small = strtolower($message);
             $split = explode('!placer', $small);
@@ -114,27 +119,26 @@ trait GameTraits
                 // remove player chavolet for the word
                 $this->remove_words_from_player_chavolet($game, $user_id, $words, $user_position);
 
+                // check if game has ended
+                if ($game->stock < 2) {
+                    $game->game_status = 0;
+
+                }
                 // message
-                $msg = "Word played successfully";
+                $msg = "Jouez avec succès";
                 $alert = "success";
 
             } else {
                 // message
-                $msg = 'Word is not in dictionary';
+                $msg = 'lettre pas en chevalet';
             }
         }
 
         if (empty($msg)) {
-            $msg = 'Message Sent';
+            $msg = 'Message envoyé';
             $alert = 'success';
         }
 
-        $check_quitter = preg_match("/!quitter/", $message);
-
-        if ($check_quitter) {
-            return ['alert' => $alert, 'message' => '!quitter'];
-            exit();
-        }
         // save current play as player play details
         $new_chat->user_id = $user_id;
         $new_chat->game_id = $game->id;
@@ -194,9 +198,9 @@ trait GameTraits
             }
             $game->current_player = $current_player;
             $game->save();
-            return ['msg' => 'Turn Skipped', 'alert' => 'success'];
+            return ['msg' => 'Tour passé', 'alert' => 'success'];
         } else {
-            return ['msg' => 'Not your Turn', 'alert' => 'error'];
+            return ['msg' => 'pas ton tour', 'alert' => 'error'];
         }
 
 
@@ -222,14 +226,14 @@ trait GameTraits
                     $new_pieces[] = $this->get_one_random_piece($game);
                 }
                 $this->store_chavolet($game, $position, $new_pieces);
-                $msg = 'New Pieces Generated';
+                $msg = 'Nouvelles pièces générées';
                 $type = 'success';
             } else {
-                $msg = 'Out of stock';
+                $msg = 'Rupture de stock';
             }
 
         } else {
-            $msg = 'Can only Shuffle full rack';
+            $msg = 'Ne peut mélanger que le rack complet';
         }
         return ['alert' => $type, 'msg' => $msg];
     }
@@ -593,15 +597,19 @@ trait GameTraits
     {
         if ((int)$game->user_id_1 == $user_id) {
             return 1;
-        } elseif ((int)$game->user_id_2 == $user_id) {
-            return 2;
-        } elseif ((int)$game->user_id_3 == $user_id) {
-            return 3;
-        } elseif ((int)$game->user_id_4 == $user_id) {
-            return 4;
-        } else {
-            return null;
         }
+        if ((int)$game->user_id_2 == $user_id) {
+            return 2;
+        }
+        if ((int)$game->user_id_3 == $user_id) {
+            return 3;
+        }
+        if ((int)$game->user_id_4 == $user_id) {
+            return 4;
+        }
+
+        return null;
+
     }
 
     private

@@ -9,6 +9,7 @@
                 <div class="vh-100 mx-auto">
                     <h3>Game Ended</h3>
                     <div>
+
                         Player Won!
                         <p>Player Stat</p>
                         Player 1
