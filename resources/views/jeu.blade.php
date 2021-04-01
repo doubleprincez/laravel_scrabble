@@ -89,7 +89,7 @@
 @endsection
 
 @section('scripts')
-    <script rel="stylesheet" src="{{ asset('js/jquery.min.js') }}"></script>
+
     <script src="{{ asset('js/jeu.js') }}" defer></script>
 
     <script>
@@ -277,9 +277,7 @@
             }
         }
         setInterval(checkTime, 4000);
-        var sendNotification = (type, message) => {
-            $.notify(message, type);
-        }
+
     </script>
 
 @endsection

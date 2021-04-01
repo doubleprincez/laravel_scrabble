@@ -154,6 +154,9 @@
                 success: function (data) {
                     // get list of players as array
                     $('#counter').text(data.count);
+                    if (data.alert) {
+                        sendNotification(data.type, data.message);
+                    }
                     if (data.players) {
                         var players = [];
                         for (var i = 1; i <= data.players.length; i++) {

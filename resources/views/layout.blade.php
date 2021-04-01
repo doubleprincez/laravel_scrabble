@@ -26,8 +26,6 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     @endif
     <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"/>
-{{--    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/laravel-notify/css/notify.css') }}">--}}
-    <script src="{{ asset('vendor/laravel-notify/js/notify.js') }}"></script>
     <script src="{{ asset('js/photoupload.js') }}" defer></script>
     @yield('styles')
 
@@ -46,6 +44,14 @@
 
 {{--        </div>--}}
 {{--    </div>--}}
+<script rel="stylesheet" src="{{ asset('js/jquery.min.js') }}"></script>
+
+<script src="{{ asset('vendor/laravel-notify/js/notify.js') }}"></script>
 @yield('scripts')
+<script>
+    var sendNotification = (type, message) => {
+        $.notify(message, type);
+    }
+</script>
 </body>
 </html>

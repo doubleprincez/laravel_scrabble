@@ -36,8 +36,7 @@
 
     @endif
     <script src="{{ asset('js/photoupload.js') }}" defer></script>
-{{--    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/laravel-notify/css/notify.css') }}">--}}
-    <script src="{{ asset('vendor/laravel-notify/js/notify.js') }}"></script>
+
 </head>
 <body>
 <div id="app">
@@ -101,6 +100,10 @@
     <main class="py-4">
         @yield('content')
     </main>
+
 </div>
+<script rel="stylesheet" src="{{ asset('js/jquery.min.js') }}"></script>
+
+<script src="{{ asset('vendor/laravel-notify/js/notify.js') }}"></script>
 </body>
 </html>
