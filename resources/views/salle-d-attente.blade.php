@@ -20,7 +20,8 @@
                         $players_count++;
                     }
                     ?>
-                    <p><span id="counter"> {{ $players_count }}</span> Joueur(s) restant(s)</p><br>
+                    <p><span id="counter"> {{ $game->partie->typePartie - $players_count }}</span> Joueur(s) restant(s)
+                    </p><br>
                 @endisset
                 <div id="spinner"
                      class=" @if($players_count!==$game->partie->typePartie) spinner-border  @endif text-danger"></div>
@@ -155,13 +156,13 @@
                     // get list of players as array
                     $('#counter').text(data.count);
                     if (data.alert) {
-                        sendNotification(data.alert,data.message);
+                        sendNotification(data.alert, data.message);
                     }
                     if (data.players) {
                         var players = [];
-                        for (var i = 1; i <= data.players.length; i++) {
-                            var player = data.players[i - 1];
-                            players[i - 1] = '<li class="flex-item my-3"> <div class="row"> <div class="col-2"> <img src="' + player.photo + '" class="" style="width:50px;height:50px">  </div> <div class="col-10 "> <h4 class="text-info">' + player.nick + ' &nbsp; <i class="fa fa-dot-circle text-success"></i></h4></div></div></li>';
+                        for (var i = 0; i < data.players.length; i++) {
+                            var player = data.players[i];
+                            players[i] = '<li class="flex-item my-3"> <div class="row"> <div class="col-2"> <img src="' + player.photo + '" class="" style="width:50px;height:50px">  </div> <div class="col-10 "> <h4 class="text-info">' + player.nick + ' &nbsp; <i class="fa fa-dot-circle text-success"></i></h4></div></div></li>';
 
 
                             // display list of users in player field

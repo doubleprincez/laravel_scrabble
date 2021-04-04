@@ -59,7 +59,7 @@ class JeuAPIController extends Controller
             $counter = count($players);
             // check if players are complete and game can proceed
             $complete = $counter === (int)$game->partie->typePartie;
-            return ['players' => $players, 'count' => $counter, 'complete' => $complete];
+            return ['players' => $players, 'count' => (int)$game->partie->typePartie - $counter, 'complete' => $complete];
         }
     }
 
@@ -91,8 +91,7 @@ class JeuAPIController extends Controller
             $game = $this->get_game_by_id($game_id);
             $new_chavolet = $this->reload_user_chavolet($game, $user_id);
             $position = $this->get_user_game_position($game, $user_id);
-            $this->store_chavolet($game, $user_id, $new_chavolet
-            );
+            $this->store_chavolet($game, $user_id, $new_chavolet);
             $msg = 'Reloaded';
             $alert = 'success';
 

@@ -33,13 +33,14 @@
     <div class="reserve">
         <h6><b>Nb lettres dans la reserve:</b><span id="stock">{{ $game->stock->remaining() }}</span></h6>
         <div class="container-fluid" style="z-index: 5;position: absolute">
-            <button class="btn btn-sm btn-outline-primary" title="skip turn" onclick="skipTurn()">passer <i
+            <button class="btn btn-sm btn-outline-primary" onclick="skipTurn()" title="passer"><i
                         class="fa  fa-angle-double-right "></i></button>
-            <button class="btn btn-sm btn-outline-secondary" title="refill new pieces" onclick="reloadPieces($(this))">
-                <i class="fa fa-circle-notch"></i> recharger
+            <button class="btn btn-sm btn-outline-secondary" onclick="reloadPieces($(this))"
+                    title="recharger">
+                <i class="fa fa-circle-notch"></i>
             </button>
-            <button class="btn btn-sm btn-outline-info" onclick="changeRack($(this))"><i
-                        class="fa fa-recycle"></i> mélanger
+            <button class="btn btn-sm btn-outline-info" onclick="changeRack($(this))" title=" mélanger"><i
+                        class="fa fa-recycle"></i>
             </button>
         </div>
     </div>
@@ -132,7 +133,7 @@
                                     if (confirm('voulez-vous quitter le jeu?')) {
                                         window.location.href = '{{ route('game.quitter') }}?game=' + {{ $game->id }};
                                     }
-                                }else{
+                                } else {
                                     if (data.alert) {
                                         sendNotification(data.alert, data.message);
                                     }

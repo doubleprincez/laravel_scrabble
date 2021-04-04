@@ -198,6 +198,7 @@ trait GameTraits
                 $current_player = 1;
             }
             $game->current_player = $current_player;
+            $game->start_time = now();
             $game->save();
             return ['msg' => 'Tour passé', 'alert' => 'success'];
         } else {
@@ -387,7 +388,7 @@ trait GameTraits
     {
         // get all game pieces
         if ($pieces == null)
-            $pieces = $this->generate_new_pieces($game->id, $position);
+            $pieces = $this->generate_new_pieces($game->id, $position, $game);
         $user_position = 'user_' . $position . '_chavolet';
         $game->$user_position = $pieces;
         $game->save();
@@ -432,11 +433,11 @@ trait GameTraits
         if ($user_chavolet !== null) {
             $check_chavolet = $this->check_empty_array($user_chavolet);
             if ($check_chavolet === null && $check_chavolet === []) {
-                return $this->generate_new_pieces($game->id, $position);
+                return $this->generate_new_pieces($game->id, $position, $game);
             }
             return $user_chavolet;
         }
-        return $this->generate_new_pieces($game->id, $position);
+        return $this->generate_new_pieces($game->id, $position, $game);
     }
 
     private function sum_stock_quantite(Game $model)
@@ -444,25 +445,27 @@ trait GameTraits
         return $model->stock->sum('quantite');
     }
 
-    private function generate_new_pieces(int $game_id, int $position)
+    private function generate_new_pieces(int $game_id, int $position, $game = null)
     {
         // To generate piece, we need the game stock, so we are sure the values are available
         // first get all values that are not 0
         $game_stock = $this->get_game_stocks($game_id);
-
         // now get the count of those number and use it to select value on random
         $count = count($game_stock);
-        // if values in the stock is less than 7, then use the stock current count else
-        // use 7 because we are generating 7 items in user chavolet
-        $condition = $count <= 7 ? $count : 7;
+        if ($game == null) {
+            $game = $this->get_game_by_id($game_id);
+        }
+
         // empty stack for holding new items we are about to pick from stock
         $stack = array();
         $parse = $game_stock;
-        for ($i = 0; $i < $condition; $i++) {
+
+        for ($i = 0; $i < 8; $i++) {
             // generate random values using the condition stated above
-            $rand = random_int(1, $condition);
+            $rand = random_int(1, $count);
             //
             $removed_letter = $parse[$rand];
+
             if ($removed_letter->quantite > 0) {
                 $stack[] = $removed_letter->lettre;
                 $qty = (int)$removed_letter->quantite;
@@ -470,8 +473,15 @@ trait GameTraits
                 $removed_letter->save();
                 $parse[$rand]->quantite--;
                 $game_stock[$rand]->save(['quantite' => $qty]);
+                if ($qty == 0) $count--;
             }
+
+            if (count($stack) == 7)
+                break;
+
+            if ($this->sum_stock_quantite($game) < 1) break;
         }
+
         // pass values in the stack into user_chavolet
         $user_chavolet = 'user_' . $position . '_chavolet';
         $game = $this->get_game_by_id($game_id);
