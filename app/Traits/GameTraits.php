@@ -440,9 +440,9 @@ trait GameTraits
         return $this->generate_new_pieces($game->id, $position, $game);
     }
 
-    private function sum_stock_quantite(Game $model)
+    private function sum_stock_quantite($game)
     {
-        return $model->stock->sum('quantite');
+        return $game->stock->sum('quantite');
     }
 
     private function generate_new_pieces(int $game_id, int $position, $game = null)
