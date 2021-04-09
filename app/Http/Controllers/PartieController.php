@@ -130,17 +130,21 @@ class PartieController extends Controller
             $position = $this->get_user_game_position($game, $user_id);
             if ($position != null) {
                 $remove_user = 'user_id_' . $position;
-                $remove_chavolet = 'user_' . $position . '_chavolet';// we will not remove user chavolet, rather we will let any new user joining the game to take that spot and continue
+                $remove_chavolet = 'user_' . $position . '_chavolet';
+                $remove_score = 'user_' . $position . '_score';
                 $game->$remove_user = null;
+                $game->$remove_chavolet = null;
+                $game->$remove_score = null;
                 $game->save();
+                // reduce other players position from where the user position is to free space
+                $this->reduce_players_position($game, $position);
                 return redirect()->route('game.ready')->with(['Resultat' => 'Game Quitted']);
             }
             return back()->with(['error' => 'Impossible de trouver le jeu']);
 
         }
         return back()->with(['error' => 'Aucun jeu sélectionné']);
-
-
     }
+
 
 }

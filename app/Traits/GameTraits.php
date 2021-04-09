@@ -692,4 +692,30 @@ trait GameTraits
     {
         return Stock::where('game_id', $game->id)->delete();
     }
+
+
+    private function reduce_players_position($game, int $current_removed_player_position)
+    {
+        // if currently quiting player is player 4 then no need to reduce other players
+        if ($current_removed_player_position < $game->partie->typePartie) {
+            // move other players one by one with their chavolet to a new position
+            for ($i = ($current_removed_player_position + 1); $i <= $game->partie->typePartie; $i++) {
+                // get current player
+                $get_id = 'user_id_' . $i;
+                $get_chovalet = 'user_' . $i . '_chavolet';
+                $get_score = 'user_' . $i . '_score';
+                $player_id = $game->$get_id;
+                $player_chavolet = $game->$get_chovalet;
+                // set new position
+                $new_position = 'user_id_' . ($i - 1);
+                $new_chavolet = 'user_' . ($i - 1) . '_chavolet';
+                $new_score = 'user_' . ($i - 1) . '_score';
+                $game->$new_position = $player_id;
+                $game->$new_chavolet = $player_chavolet;
+                $game->$new_score = $get_score;
+                $game->save();
+
+            }
+        }
+    }
 }

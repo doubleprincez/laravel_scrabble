@@ -90,7 +90,7 @@ class JeuAPIController extends Controller
             $game_id = request()->get('gameId');
             $game = $this->get_game_by_id($game_id);
             $new_chavolet = $this->reload_user_chavolet($game, $user_id);
-            $position = $this->get_user_game_position($game, $user_id);
+//            $position = $this->get_user_game_position($game, $user_id);
             $this->store_chavolet($game, $user_id, $new_chavolet);
             $msg = 'Reloaded';
             $alert = 'success';

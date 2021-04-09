@@ -15,7 +15,7 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id_1');
+            $table->unsignedBigInteger('user_id_1')->nullable();
             $table->unsignedBigInteger('user_id_2')->nullable();
             $table->unsignedBigInteger('user_id_3')->nullable();
             $table->unsignedBigInteger('user_id_4')->nullable();
